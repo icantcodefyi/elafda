@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "./dropdown-menu";
 
-export { ThemeProvider } from "next-themes";
+export { ThemeProvider, useTheme } from "next-themes";
 
 export function ThemeToggle() {
   const { setTheme } = useTheme();

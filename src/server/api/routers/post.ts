@@ -1,39 +1,34 @@
-import { z } from "zod";
+import type { TRPCRouterRecord } from "@trpc/server";
+import { z } from "zod/v4";
 
-import {
-	createTRPCRouter,
-	protectedProcedure,
-	publicProcedure,
-} from "@/server/api/trpc";
-import { posts } from "@/server/db/schema";
+import { desc, eq } from "drizzle-orm";
+import { CreatePostSchema, Post } from "@/server/db/schema";
 
-export const postRouter = createTRPCRouter({
-	hello: publicProcedure
-		.input(z.object({ text: z.string() }))
-		.query(({ input }) => {
-			return {
-				greeting: `Hello ${input.text}`,
-			};
-		}),
+import { protectedProcedure, publicProcedure } from "../trpc";
 
-	create: protectedProcedure
-		.input(z.object({ name: z.string().min(1) }))
-		.mutation(async ({ ctx, input }) => {
-			await ctx.db.insert(posts).values({
-				name: input.name,
-				createdById: ctx.session.user.id,
-			});
-		}),
+export const postRouter = {
+  all: publicProcedure.query(({ ctx }) => {
+    return ctx.db.query.Post.findMany({
+      orderBy: desc(Post.id),
+      limit: 10,
+    });
+  }),
 
-	getLatest: protectedProcedure.query(async ({ ctx }) => {
-		const post = await ctx.db.query.posts.findFirst({
-			orderBy: (posts, { desc }) => [desc(posts.createdAt)],
-		});
+  byId: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.query.Post.findFirst({
+        where: eq(Post.id, input.id),
+      });
+    }),
 
-		return post ?? null;
-	}),
+  create: protectedProcedure
+    .input(CreatePostSchema)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.insert(Post).values(input);
+    }),
 
-	getSecretMessage: protectedProcedure.query(() => {
-		return "you can now see this secret message!";
-	}),
-});
+  delete: protectedProcedure.input(z.string()).mutation(({ ctx, input }) => {
+    return ctx.db.delete(Post).where(eq(Post.id, input));
+  }),
+} satisfies TRPCRouterRecord;

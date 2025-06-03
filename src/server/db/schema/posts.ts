@@ -3,6 +3,7 @@ import { index } from "drizzle-orm/pg-core";
 import { createTable } from "../utils";
 import { User } from "./auth";
 import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 
 export const Post = createTable(
     "post",
@@ -22,7 +23,7 @@ export const Post = createTable(
     }),
     (t) => [
         index("created_by_idx").on(t.createdById),
-        index("name_idx").on(t.name),
+        index("name_idx").on(t.title),
     ],
 );
 

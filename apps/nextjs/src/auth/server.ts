@@ -18,8 +18,10 @@ export const auth = initAuth({
   baseUrl,
   productionUrl: `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`,
   secret: env.AUTH_SECRET,
-  discordClientId: env.AUTH_DISCORD_ID,
-  discordClientSecret: env.AUTH_DISCORD_SECRET,
+  googleClientId: env.AUTH_GOOGLE_ID,
+  googleClientSecret: env.AUTH_GOOGLE_SECRET,
+  twitterClientId: env.AUTH_TWITTER_ID,
+  twitterClientSecret: env.AUTH_TWITTER_SECRET,
 });
 
 export const getSession = cache(async () =>

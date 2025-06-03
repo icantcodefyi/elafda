@@ -11,8 +11,11 @@ export function initAuth(options: {
   productionUrl: string;
   secret: string | undefined;
 
-  discordClientId: string;
-  discordClientSecret: string;
+  googleClientId: string;
+  googleClientSecret: string;
+
+  twitterClientId: string;
+  twitterClientSecret: string;
 }) {
   console.log("INIT AUTH", options);
   const config = {
@@ -29,10 +32,15 @@ export function initAuth(options: {
       expo(),
     ],
     socialProviders: {
-      discord: {
-        clientId: options.discordClientId,
-        clientSecret: options.discordClientSecret,
-        redirectURI: `${options.productionUrl}/api/auth/callback/discord`,
+      google: {
+        clientId: options.googleClientId,
+        clientSecret: options.googleClientSecret,
+        redirectURI: `${options.productionUrl}/api/auth/callback/google`,
+      },
+      twitter: {
+        clientId: options.twitterClientId,
+        clientSecret: options.twitterClientSecret,
+        redirectURI: `${options.productionUrl}/api/auth/callback/twitter`,
       },
     },
     trustedOrigins: ["expo://"],

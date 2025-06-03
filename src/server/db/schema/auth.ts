@@ -3,7 +3,7 @@ import { index, primaryKey } from "drizzle-orm/pg-core";
 import { createTable } from "../utils";
 import type { AdapterAccount } from "next-auth/adapters";
 
-export const users = createTable("user", (d) => ({
+export const User = createTable("user", (d) => ({
 	id: d
 		.varchar({ length: 255 })
 		.notNull()
@@ -20,17 +20,17 @@ export const users = createTable("user", (d) => ({
 	image: d.varchar({ length: 255 }),
 }));
 
-export const usersRelations = relations(users, ({ many }) => ({
-	accounts: many(accounts),
+export const UserRelations = relations(User, ({ many }) => ({
+	accounts: many(Account),
 }));
 
-export const accounts = createTable(
+export const Account = createTable(
 	"account",
 	(d) => ({
 		userId: d
 			.varchar({ length: 255 })
 			.notNull()
-			.references(() => users.id),
+			.references(() => User.id),
 		type: d.varchar({ length: 255 }).$type<AdapterAccount["type"]>().notNull(),
 		provider: d.varchar({ length: 255 }).notNull(),
 		providerAccountId: d.varchar({ length: 255 }).notNull(),
@@ -48,28 +48,28 @@ export const accounts = createTable(
 	],
 );
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-	user: one(users, { fields: [accounts.userId], references: [users.id] }),
+export const AccountRelations = relations(Account, ({ one }) => ({
+	user: one(User, { fields: [Account.userId], references: [User.id] }),
 }));
 
-export const sessions = createTable(
+export const Session = createTable(
 	"session",
 	(d) => ({
 		sessionToken: d.varchar({ length: 255 }).notNull().primaryKey(),
 		userId: d
 			.varchar({ length: 255 })
 			.notNull()
-			.references(() => users.id),
+			.references(() => User.id),
 		expires: d.timestamp({ mode: "date", withTimezone: true }).notNull(),
 	}),
 	(t) => [index("t_user_id_idx").on(t.userId)],
 );
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-	user: one(users, { fields: [sessions.userId], references: [users.id] }),
+export const SessionRelations = relations(Session, ({ one }) => ({
+	user: one(User, { fields: [Session.userId], references: [User.id] }),
 }));
 
-export const verificationTokens = createTable(
+export const VerificationToken = createTable(
 	"verification_token",
 	(d) => ({
 		identifier: d.varchar({ length: 255 }).notNull(),

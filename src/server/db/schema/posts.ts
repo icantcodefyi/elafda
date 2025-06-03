@@ -1,17 +1,19 @@
 import { sql } from "drizzle-orm";
 import { index } from "drizzle-orm/pg-core";
 import { createTable } from "../utils";
-import { users } from "./auth";
+import { User } from "./auth";
+import { createInsertSchema } from "drizzle-zod";
 
-export const posts = createTable(
+export const Post = createTable(
     "post",
     (d) => ({
         id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-        name: d.varchar({ length: 256 }),
+        title: d.varchar({ length: 256 }).notNull(),
+        content: d.text().notNull(),
         createdById: d
             .varchar({ length: 255 })
             .notNull()
-            .references(() => users.id),
+            .references(() => User.id),
         createdAt: d
             .timestamp({ withTimezone: true })
             .default(sql`CURRENT_TIMESTAMP`)
@@ -23,3 +25,12 @@ export const posts = createTable(
         index("name_idx").on(t.name),
     ],
 );
+
+export const CreatePostSchema = createInsertSchema(Post, {
+    title: z.string().max(256),
+    content: z.string().max(256),
+}).omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+});

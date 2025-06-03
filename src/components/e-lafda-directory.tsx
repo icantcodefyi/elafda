@@ -11,6 +11,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { SearchContainer } from "~/components/search";
 import { Star, Clock, User, Eye } from "lucide-react";
+import { formatDate } from "~/lib/utils";
 
 // Mock data for e-lafdas - you can replace this with real data
 const mockELafdas = [
@@ -69,9 +70,6 @@ interface ELafdaDirectoryProps {
 
 export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const availableCategories = useMemo(() => {
-    return Array.from(new Set(mockELafdas.map((lafda) => lafda.category)));
-  }, []);
 
   const filteredAndSortedELafdas = useMemo(() => {
     const filtered = mockELafdas.filter((lafda) => {
@@ -141,7 +139,7 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
                   <User className="mr-1 h-4 w-4" />
                   <span className="mr-4">{lafda.author}</span>
                   <Clock className="mr-1 h-4 w-4" />
-                  <span>{new Date(lafda.createdAt).toLocaleDateString()}</span>
+                  <span>{formatDate(lafda.createdAt)}</span>
                 </div>
 
                 {/* Stats */}

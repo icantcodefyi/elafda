@@ -15,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { SignInDialog } from "~/components/auth/sign-in-dialog";
-import { Plus, Home, LogOut, User } from "lucide-react";
+import { Plus, LogOut, User, Palette } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
@@ -73,11 +73,6 @@ export function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
-            {/* Mobile navigation button */}
-            <Button variant="ghost" size="icon" className="md:hidden">
-              <Home className="h-4 w-4" />
-              <span className="sr-only">Home</span>
-            </Button>
 
             {/* Create new e-lafda button */}
             <Button
@@ -91,8 +86,7 @@ export function Header() {
             </Button>
 
             <Button
-              size="icon"
-              className="sm:hidden"
+              className="sm:hidden h-8 w-8"
               onClick={handleNewELafda}
               disabled={isLoading}
             >
@@ -138,11 +132,12 @@ export function Header() {
                     <span>Profile</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm">Theme</span>
-                      <ThemeToggle className="scale-75" />
+                  <div className="relative flex cursor-default select-none items-center justify-between rounded-sm px-2 text-sm outline-none">
+                    <div className="flex items-center">
+                      <Palette className="mr-2 h-4 w-4 dark:text-muted-foreground" />
+                      <span className="ml-2 text-sm">Theme</span>
                     </div>
+                    <ThemeToggle className="scale-75" />
                   </div>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut}>

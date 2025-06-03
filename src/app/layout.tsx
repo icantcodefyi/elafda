@@ -28,15 +28,10 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
       <body>
         <SessionProviderWrapper>
-          <ThemeProvider
-            defaultTheme="system"
-            storageKey="elafda-ui-theme"
-          >
+          <ThemeProvider defaultTheme="system" storageKey="elafda-ui-theme">
             <div className="relative flex min-h-screen flex-col">
               <Header />
-              <main className="flex-1">
-                {children}
-              </main>
+              <main className="flex-1">{children}</main>
             </div>
           </ThemeProvider>
         </SessionProviderWrapper>

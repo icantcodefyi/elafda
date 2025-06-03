@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { SearchBar } from "~/components/search"
-import { cn } from "~/lib/utils"
+import { SearchBar } from "~/components/search";
+import { cn } from "~/lib/utils";
 
 export interface SearchContainerProps {
-  searchValue: string
-  onSearchChange: (value: string) => void
-  placeholder?: string
-  className?: string
-  showResultsCount?: boolean
-  resultsCount?: number
-  totalCount?: number
+  searchValue: string;
+  onSearchChange: (value: string) => void;
+  placeholder?: string;
+  className?: string;
+  showResultsCount?: boolean;
+  resultsCount?: number;
+  totalCount?: number;
 }
 
 export function SearchContainer({
@@ -20,7 +20,7 @@ export function SearchContainer({
   className,
   showResultsCount = true,
   resultsCount,
-  totalCount
+  totalCount,
 }: SearchContainerProps) {
   return (
     <div className={cn("space-y-4", className)}>
@@ -36,13 +36,15 @@ export function SearchContainer({
       </div>
 
       {/* Results Summary */}
-      {showResultsCount && resultsCount !== undefined && totalCount !== undefined && (
-        <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <p>
-            Showing {resultsCount} of {totalCount} results
-          </p>
-        </div>
-      )}
+      {showResultsCount &&
+        resultsCount !== undefined &&
+        totalCount !== undefined && (
+          <div className="text-muted-foreground flex items-center justify-between text-sm">
+            <p>
+              Showing {resultsCount} of {totalCount} results
+            </p>
+          </div>
+        )}
     </div>
-  )
-} 
+  );
+}

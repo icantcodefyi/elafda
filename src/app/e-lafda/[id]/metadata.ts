@@ -1,22 +1,28 @@
-import type { Metadata } from "next"
-import { mockELafdaData } from "~/lib/mock-data"
+import type { Metadata } from "next";
+import { mockELafdaData } from "~/lib/mock-data";
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
   // In a real app, you'd fetch the data here
-  const elafda = params.id === "1" ? mockELafdaData : null
+  const elafda = params.id === "1" ? mockELafdaData : null;
 
   if (!elafda) {
     return {
       title: "E-Lafda Not Found",
       description: "The requested e-lafda could not be found.",
-    }
+    };
   }
 
   return {
     title: `${elafda.title} | E-Lafda`,
     description: elafda.description,
     keywords: elafda.tags.join(", "),
-    authors: [{ name: elafda.author.displayName, url: `/@${elafda.author.username}` }],
+    authors: [
+      { name: elafda.author.displayName, url: `/@${elafda.author.username}` },
+    ],
     openGraph: {
       title: elafda.title,
       description: elafda.description,
@@ -32,5 +38,5 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       description: elafda.description,
       creator: `@${elafda.author.username}`,
     },
-  }
-} 
+  };
+}

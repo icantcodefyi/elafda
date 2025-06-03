@@ -59,7 +59,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
         <div className="space-y-4 py-4">
           <Button
             variant="outline"
-            className="w-full h-11 text-sm font-medium"
+            className="h-11 w-full text-sm font-medium"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading || isTwitterLoading}
           >
@@ -76,7 +76,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
+              <span className="bg-background text-muted-foreground px-2">
                 Or
               </span>
             </div>
@@ -84,7 +84,7 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
 
           <Button
             variant="outline"
-            className="w-full h-11 text-sm font-medium"
+            className="h-11 w-full text-sm font-medium"
             onClick={handleTwitterSignIn}
             disabled={isGoogleLoading || isTwitterLoading}
           >
@@ -97,10 +97,10 @@ export function SignInDialog({ open, onOpenChange }: SignInDialogProps) {
           </Button>
         </div>
 
-        <div className="text-center text-xs text-muted-foreground">
+        <div className="text-muted-foreground text-center text-xs">
           By continuing, you agree to our Terms of Service and Privacy Policy
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}

@@ -22,13 +22,13 @@ import { signOut } from "next-auth/react";
 
 export function Header() {
   const { theme } = useTheme();
-  const { 
-    user, 
-    isSignedIn, 
-    isLoading, 
-    showSignInDialog, 
-    setShowSignInDialog, 
-    requireAuth 
+  const {
+    user,
+    isSignedIn,
+    isLoading,
+    showSignInDialog,
+    setShowSignInDialog,
+    requireAuth,
   } = useAuth();
 
   const handleNewELafda = () => {
@@ -80,8 +80,8 @@ export function Header() {
             </Button>
 
             {/* Create new e-lafda button */}
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               className="hidden sm:flex"
               onClick={handleNewELafda}
               disabled={isLoading}
@@ -90,8 +90,8 @@ export function Header() {
               New E-Lafda
             </Button>
 
-            <Button 
-              size="icon" 
+            <Button
+              size="icon"
               className="sm:hidden"
               onClick={handleNewELafda}
               disabled={isLoading}
@@ -104,9 +104,15 @@ export function Header() {
             {isSignedIn && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-8 w-8 rounded-full"
+                  >
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.image ?? undefined} alt={user.name ?? "User"} />
+                      <AvatarImage
+                        src={user.image ?? undefined}
+                        alt={user.name ?? "User"}
+                      />
                       <AvatarFallback className="text-xs">
                         {getUserInitials(user.name)}
                       </AvatarFallback>
@@ -116,16 +122,18 @@ export function Header() {
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuLabel className="font-normal">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
+                      <p className="text-sm leading-none font-medium">
                         {user.name ?? "User"}
                       </p>
-                      <p className="text-xs leading-none text-muted-foreground">
+                      <p className="text-muted-foreground text-xs leading-none">
                         {user.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => console.log("Profile clicked")}>
+                  <DropdownMenuItem
+                    onClick={() => console.log("Profile clicked")}
+                  >
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
@@ -152,9 +160,9 @@ export function Header() {
       </header>
 
       {/* Sign in dialog */}
-      <SignInDialog 
-        open={showSignInDialog} 
-        onOpenChange={setShowSignInDialog} 
+      <SignInDialog
+        open={showSignInDialog}
+        onOpenChange={setShowSignInDialog}
       />
     </>
   );

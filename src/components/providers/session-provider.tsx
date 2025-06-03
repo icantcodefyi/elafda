@@ -7,6 +7,8 @@ interface SessionProviderWrapperProps {
   children: ReactNode;
 }
 
-export function SessionProviderWrapper({ children }: SessionProviderWrapperProps) {
+export function SessionProviderWrapper({
+  children,
+}: SessionProviderWrapperProps) {
   return <SessionProvider>{children}</SessionProvider>;
-} 
+}

@@ -1,17 +1,24 @@
-"use client"
-import { useState, useMemo } from "react"
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
-import { Button } from "~/components/ui/button"
-import { SearchContainer } from "~/components/search"
-import { Star, Clock, User, Eye } from "lucide-react"
+"use client";
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Button } from "~/components/ui/button";
+import { SearchContainer } from "~/components/search";
+import { Star, Clock, User, Eye } from "lucide-react";
 
 // Mock data for e-lafdas - you can replace this with real data
 const mockELafdas = [
   {
     id: "1",
     title: "The Great Debate of 2024",
-    description: "A heated discussion about the future of web development frameworks",
+    description:
+      "A heated discussion about the future of web development frameworks",
     author: "TechGuru42",
     createdAt: "2024-01-15",
     views: 1250,
@@ -33,7 +40,8 @@ const mockELafdas = [
   {
     id: "3",
     title: "Remote Work Productivity Hacks",
-    description: "Controversial opinions about working from home that sparked major discussion",
+    description:
+      "Controversial opinions about working from home that sparked major discussion",
     author: "WorkFromHomeWizard",
     createdAt: "2024-01-08",
     views: 2341,
@@ -44,7 +52,8 @@ const mockELafdas = [
   {
     id: "4",
     title: "The Pineapple Pizza Controversy",
-    description: "Does pineapple belong on pizza? This lafda divided the internet",
+    description:
+      "Does pineapple belong on pizza? This lafda divided the internet",
     author: "FoodCritic99",
     createdAt: "2024-01-05",
     views: 1789,
@@ -52,35 +61,36 @@ const mockELafdas = [
     category: "Food",
     isHot: false,
   },
-]
+];
 
 interface ELafdaDirectoryProps {
-  className?: string
+  className?: string;
 }
 
 export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
-  const [searchTerm, setSearchTerm] = useState("")
+  const [searchTerm, setSearchTerm] = useState("");
   const availableCategories = useMemo(() => {
-    return Array.from(new Set(mockELafdas.map(lafda => lafda.category)))
-  }, [])
+    return Array.from(new Set(mockELafdas.map((lafda) => lafda.category)));
+  }, []);
 
   const filteredAndSortedELafdas = useMemo(() => {
     const filtered = mockELafdas.filter((lafda) => {
       // Search term filter
-      const matchesSearch = lafda.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           lafda.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           lafda.author.toLowerCase().includes(searchTerm.toLowerCase())
-      
-      return matchesSearch
-    })
+      const matchesSearch =
+        lafda.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lafda.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        lafda.author.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesSearch;
+    });
 
     // Sort by date (newest first)
     filtered.sort((a, b) => {
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    })
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
-    return filtered
-  }, [searchTerm])
+    return filtered;
+  }, [searchTerm]);
 
   return (
     <div className={className}>
@@ -97,17 +107,23 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
       {/* E-Lafdas Grid */}
       <div className="grid grid-cols-1 gap-6">
         {filteredAndSortedELafdas.map((lafda) => (
-          <Card key={lafda.id} className="group hover:shadow-md transition-all duration-200">
+          <Card
+            key={lafda.id}
+            className="group transition-all duration-200 hover:shadow-md"
+          >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-                    <Link href={`/e-lafda/${lafda.id}`} className="hover:underline">
+                  <CardTitle className="group-hover:text-primary line-clamp-2 transition-colors">
+                    <Link
+                      href={`/e-lafda/${lafda.id}`}
+                      className="hover:underline"
+                    >
                       {lafda.title}
                     </Link>
                     {lafda.isHot && (
-                      <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
-                         Hot
+                      <span className="bg-destructive/10 text-destructive ml-2 inline-flex items-center rounded-full px-2 py-1 text-xs font-medium">
+                        Hot
                       </span>
                     )}
                   </CardTitle>
@@ -117,30 +133,30 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent>
               <div className="space-y-4">
                 {/* Author and Date */}
-                <div className="flex items-center text-sm text-muted-foreground">
-                  <User className="h-4 w-4 mr-1" />
+                <div className="text-muted-foreground flex items-center text-sm">
+                  <User className="mr-1 h-4 w-4" />
                   <span className="mr-4">{lafda.author}</span>
-                  <Clock className="h-4 w-4 mr-1" />
+                  <Clock className="mr-1 h-4 w-4" />
                   <span>{new Date(lafda.createdAt).toLocaleDateString()}</span>
                 </div>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center space-x-4 text-sm">
                     <div className="flex items-center">
-                      <Eye className="h-4 w-4 mr-1" />
+                      <Eye className="mr-1 h-4 w-4" />
                       <span>{lafda.views.toLocaleString()}</span>
                     </div>
                     <div className="flex items-center">
-                      <Star className="h-4 w-4 mr-1" />
+                      <Star className="mr-1 h-4 w-4" />
                       <span>{lafda.stars}</span>
                     </div>
                   </div>
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
+                  <span className="bg-secondary text-secondary-foreground inline-flex items-center rounded-full px-2 py-1 text-xs font-medium">
                     {lafda.category}
                   </span>
                 </div>
@@ -159,22 +175,23 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
 
       {/* Empty State */}
       {filteredAndSortedELafdas.length === 0 && (
-        <div className="text-center py-12">
-          <h3 className="text-lg font-semibold mb-2">No e-lafdas found</h3>
+        <div className="py-12 text-center">
+          <h3 className="mb-2 text-lg font-semibold">No e-lafdas found</h3>
           <p className="text-muted-foreground">
-            Try adjusting your search terms or filters to find what you&apos;re looking for.
+            Try adjusting your search terms or filters to find what you&apos;re
+            looking for.
           </p>
         </div>
       )}
 
       {/* Load More Section */}
       {filteredAndSortedELafdas.length > 0 && (
-        <div className="text-center mt-8">
+        <div className="mt-8 text-center">
           <Button variant="outline" size="lg">
             Load More E-Lafdas
           </Button>
         </div>
       )}
     </div>
-  )
-} 
+  );
+}

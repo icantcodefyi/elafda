@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 import { siteConfig } from "~/site-config";
 import { ThemeProvider } from "~/components/theme-provider";
+import { SessionProviderWrapper } from "~/components/providers/session-provider";
 import { Header } from "~/components/header";
 
 export const metadata: Metadata = {
@@ -26,17 +27,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          defaultTheme="system"
-          storageKey="elafda-ui-theme"
-        >
-          <div className="relative flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-          </div>
-        </ThemeProvider>
+        <SessionProviderWrapper>
+          <ThemeProvider
+            defaultTheme="system"
+            storageKey="elafda-ui-theme"
+          >
+            <div className="relative flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+            </div>
+          </ThemeProvider>
+        </SessionProviderWrapper>
       </body>
     </html>
   );

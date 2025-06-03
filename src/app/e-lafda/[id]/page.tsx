@@ -49,9 +49,9 @@ import {
 import type { ELafda, ELafdaComment } from "~/types/e-lafda";
 
 interface ELafdaPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 // Mock function to fetch e-lafda data - replace with real API call
@@ -70,7 +70,8 @@ async function getELafdaById(id: string): Promise<ELafda | null> {
 export async function generateMetadata({
   params,
 }: ELafdaPageProps): Promise<Metadata> {
-  const elafda = await getELafdaById(params.id);
+  const { id } = await params;
+  const elafda = await getELafdaById(id);
 
   if (!elafda) {
     return {
@@ -374,7 +375,8 @@ function PollComponent({ poll }: { poll: NonNullable<ELafda["polls"]>[0] }) {
 }
 
 export default async function ELafdaPage({ params }: ELafdaPageProps) {
-  const elafda = await getELafdaById(params.id);
+  const { id } = await params;
+  const elafda = await getELafdaById(id);
 
   if (!elafda) {
     notFound();

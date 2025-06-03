@@ -13,19 +13,6 @@ datasource db {
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
-
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
-}
-
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -60,9 +47,13 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
+    isAdmin       Boolean   @default(false)
     accounts      Account[]
     sessions      Session[]
-    posts         Post[]
+    createdPosts  Post[]    @relation("PostCreator")
+    approvedPosts Post[]    @relation("PostApprover")
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
 }
 
 model VerificationToken {
@@ -71,4 +62,121 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// E-Lafda specific models
+model Post {
+    id               String           @id @default(cuid())
+    title            String
+    description      String?          // @db.Text
+    detailedStory    String?          // @db.Text
+    lafdaDate        DateTime         // When the actual lafda happened
+    sourceLinks      String[]         // Array of source URLs
+    screenshots      String[]         // Array of screenshot URLs
+    severity         Severity         @default(LOW)
+    category         LafdaCategory    @default(OTHER)
+    tags             String[]
+    
+    // Approval system
+    status           PostStatus       @default(PENDING)
+    isApproved       Boolean          @default(false)
+    approvalNote     String?
+    
+    // Relationships
+    createdBy        String
+    creator          User             @relation("PostCreator", fields: [createdBy], references: [id])
+    approvedBy       String?
+    approver         User?            @relation("PostApprover", fields: [approvedBy], references: [id])
+    
+    // Many-to-many with Twitter accounts
+    postAccounts     PostAccount[]
+    
+    // Metadata
+    views            Int              @default(0)
+    upvotes          Int              @default(0)
+    downvotes        Int              @default(0)
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
+    approvedAt       DateTime?
+
+    @@index([status])
+    @@index([isApproved])
+    @@index([lafdaDate])
+    @@index([category])
+    @@index([severity])
+}
+
+model TwitterAccount {
+    id              String        @id @default(cuid())
+    twitterId       String        @unique // Twitter's actual user ID
+    username        String        @unique // @handle without @
+    displayName     String
+    profileImage    String?
+    isVerified      Boolean       @default(false)
+    followerCount   Int?
+    bio             String?
+    isActive        Boolean       @default(true)
+    
+    // Relationships
+    postAccounts    PostAccount[]
+    
+    // Metadata
+    createdAt       DateTime      @default(now())
+    updatedAt       DateTime      @updatedAt
+
+    @@index([username])
+    @@index([twitterId])
+}
+
+// Junction table for many-to-many relationship between Posts and TwitterAccounts
+model PostAccount {
+    id          String         @id @default(cuid())
+    postId      String
+    accountId   String
+    role        AccountRole    @default(INVOLVED) // How this account is related to the lafda
+    description String?        // Additional context about their involvement
+    
+    post        Post           @relation(fields: [postId], references: [id], onDelete: Cascade)
+    account     TwitterAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    
+    createdAt   DateTime       @default(now())
+
+    @@unique([postId, accountId])
+    @@index([postId])
+    @@index([accountId])
+}
+
+// Enums
+enum PostStatus {
+    PENDING
+    APPROVED
+    REJECTED
+    UNDER_REVIEW
+}
+
+enum Severity {
+    LOW
+    MEDIUM
+    HIGH
+    CRITICAL
+}
+
+enum LafdaCategory {
+    POLITICS
+    ENTERTAINMENT
+    SPORTS
+    BUSINESS
+    TECHNOLOGY
+    SOCIAL_MEDIA
+    PERSONAL
+    LEGAL
+    OTHER
+}
+
+enum AccountRole {
+    MAIN_INVOLVED    // Primary person in the lafda
+    INVOLVED         // Secondary involved person
+    RESPONDED        // Someone who responded/reacted
+    MENTIONED        // Just mentioned in the lafda
+    WITNESS          // Someone who shared/witnessed
 }

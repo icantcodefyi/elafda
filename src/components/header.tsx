@@ -74,14 +74,13 @@ export function Header() {
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
 
-            {/* Create new e-lafda button */}
             <Button
               size="sm"
               className="hidden sm:flex"
               onClick={handleNewELafda}
               disabled={isLoading}
             >
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="h-4 w-4" />
               New E-Lafda
             </Button>
 

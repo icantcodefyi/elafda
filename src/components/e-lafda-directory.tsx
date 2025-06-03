@@ -1,9 +1,9 @@
 "use client"
-import * as React from "react"
+import { useState, useMemo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { Search, Star, Clock, User, Eye } from "lucide-react"
+import { SearchContainer, type SearchFiltersType } from "~/components/search"
+import { Star, Clock, User, Eye } from "lucide-react"
 
 // Mock data for e-lafdas - you can replace this with real data
 const mockELafdas = [
@@ -58,32 +58,81 @@ interface ELafdaDirectoryProps {
 }
 
 export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
-  const [searchTerm, setSearchTerm] = React.useState("")
-
-  const filteredELafdas = mockELafdas.filter((lafda) => {
-    const matchesSearch = lafda.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         lafda.description.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchesSearch
+  const [searchTerm, setSearchTerm] = useState("")
+  const [filters, setFilters] = useState<SearchFiltersType>({
+    categories: [],
+    sortBy: "date",
+    sortOrder: "desc",
+    showHotOnly: false,
   })
+
+  const availableCategories = useMemo(() => {
+    return Array.from(new Set(mockELafdas.map(lafda => lafda.category)))
+  }, [])
+
+  const filteredAndSortedELafdas = useMemo(() => {
+    const filtered = mockELafdas.filter((lafda) => {
+      // Search term filter
+      const matchesSearch = lafda.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           lafda.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           lafda.author.toLowerCase().includes(searchTerm.toLowerCase())
+      
+      // Category filter
+      const matchesCategory = filters.categories.length === 0 || 
+                             filters.categories.includes(lafda.category)
+      
+      // Hot filter
+      const matchesHot = !filters.showHotOnly || lafda.isHot
+
+      return matchesSearch && matchesCategory && matchesHot
+    })
+
+    // Sorting
+    filtered.sort((a, b) => {
+      let comparison = 0
+      
+      switch (filters.sortBy) {
+        case "date":
+          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          break
+        case "views":
+          comparison = a.views - b.views
+          break
+        case "stars":
+          comparison = a.stars - b.stars
+          break
+        case "trending":
+          // Custom trending logic: combination of views, stars, and recency
+          const aScore = a.views * 0.3 + a.stars * 0.5 + (a.isHot ? 500 : 0)
+          const bScore = b.views * 0.3 + b.stars * 0.5 + (b.isHot ? 500 : 0)
+          comparison = aScore - bScore
+          break
+      }
+
+      return filters.sortOrder === "desc" ? -comparison : comparison
+    })
+
+    return filtered
+  }, [searchTerm, filters])
 
   return (
     <div className={className}>
-
-      <div className="flex flex-col sm:flex-row gap-4 mb-6">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search e-lafdas..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+      {/* Search and Filters Section */}
+      <SearchContainer
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        filters={filters}
+        onFiltersChange={setFilters}
+        availableCategories={availableCategories}
+        placeholder="Search e-lafdas by title, description, or author..."
+        resultsCount={filteredAndSortedELafdas.length}
+        totalCount={mockELafdas.length}
+        className="mb-6"
+      />
 
       {/* E-Lafdas Grid */}
       <div className="grid grid-cols-1 gap-6">
-        {filteredELafdas.map((lafda) => (
+        {filteredAndSortedELafdas.map((lafda) => (
           <Card key={lafda.id} className="group hover:shadow-md transition-all duration-200">
             <CardHeader>
               <div className="flex items-start justify-between">
@@ -92,7 +141,7 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
                     {lafda.title}
                     {lafda.isHot && (
                       <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
-                        🔥 Hot
+                         Hot
                       </span>
                     )}
                   </CardTitle>
@@ -141,7 +190,7 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
       </div>
 
       {/* Empty State */}
-      {filteredELafdas.length === 0 && (
+      {filteredAndSortedELafdas.length === 0 && (
         <div className="text-center py-12">
           <h3 className="text-lg font-semibold mb-2">No e-lafdas found</h3>
           <p className="text-muted-foreground">
@@ -151,7 +200,7 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
       )}
 
       {/* Load More Section */}
-      {filteredELafdas.length > 0 && (
+      {filteredAndSortedELafdas.length > 0 && (
         <div className="text-center mt-8">
           <Button variant="outline" size="lg">
             Load More E-Lafdas

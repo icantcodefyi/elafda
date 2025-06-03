@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
-  icons: [{ rel: "icon", url: "/logo-white.svg" }],
+  icons: [{ rel: "icon", url: "/logo.svg" }],
 };
 
 const geist = Geist({

@@ -16,17 +16,19 @@ import {
   FormField,
   FormItem,
   FormMessage,
-  useForm,
 } from "@acme/ui/form";
 import { Input } from "@acme/ui/input";
-import { toast } from "@acme/ui/toast";
+import { toast } from "sonner";
 
 import { useTRPC } from "~/trpc/react";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod";
 
 export function CreatePostForm() {
   const trpc = useTRPC();
-  const form = useForm({
-    schema: CreatePostSchema,
+  const form = useForm<z.infer<typeof CreatePostSchema>>({
+    resolver: zodResolver(CreatePostSchema),
     defaultValues: {
       content: "",
       title: "",

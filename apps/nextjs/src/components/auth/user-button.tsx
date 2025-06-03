@@ -11,12 +11,12 @@ import {
   DropdownMenuTrigger,
 } from '@acme/ui/dropdown-menu';
 import { Skeleton } from '@acme/ui/skeleton';
-import { auth } from '~/auth/server';
 import { cn } from '@acme/ui';
 
 import type { UserAvatarClassNames } from './user-avatar';
 import { UserAvatar } from './user-avatar';
 import { LogInIcon, LogOutIcon } from 'lucide-react';
+import { authClient } from '~/auth/client';
 
 export interface UserButtonClassNames {
   base?: string;
@@ -40,7 +40,7 @@ export interface UserButtonProps {
 }
 
 export function UserButton({ className, classNames }: UserButtonProps) {
-  const { data: sessionData, isPending } = useSession();
+  const { data: sessionData, isPending } = authClient.useSession();
   const user = sessionData?.user ?? null;
 
   return (
@@ -115,7 +115,7 @@ export function UserButton({ className, classNames }: UserButtonProps) {
           <>
             <DropdownMenuItem
               className={classNames?.content?.menuItem}
-              onClick={async () => await auth.signOut()}
+              onClick={async () => await authClient.signOut()}
             >
               <LogOutIcon className='size-4' />
               Log Out

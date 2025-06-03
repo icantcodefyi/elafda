@@ -1,7 +1,7 @@
 import type { ComponentProps } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@acme/ui/avatar';
-import type { User } from '@/lib/auth-client';
+import type { User } from '~/auth/client';
 import { cn } from '@acme/ui';
 import { UserIcon } from 'lucide-react';
 

@@ -28,6 +28,7 @@
     "next": "^15.3.3",
     "react": "catalog:react19",
     "react-dom": "catalog:react19",
+    "react-hook-form": "^7.57.0",
     "superjson": "2.2.2",
     "zod": "catalog:"
   },

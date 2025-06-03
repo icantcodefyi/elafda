@@ -1,8 +1,9 @@
 "use client"
 import { useState, useMemo } from "react"
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/components/ui/card"
 import { Button } from "~/components/ui/button"
-import { SearchContainer, type SearchFiltersType } from "~/components/search"
+import { SearchContainer } from "~/components/search"
 import { Star, Clock, User, Eye } from "lucide-react"
 
 // Mock data for e-lafdas - you can replace this with real data
@@ -59,13 +60,6 @@ interface ELafdaDirectoryProps {
 
 export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [filters, setFilters] = useState<SearchFiltersType>({
-    categories: [],
-    sortBy: "date",
-    sortOrder: "desc",
-    showHotOnly: false,
-  })
-
   const availableCategories = useMemo(() => {
     return Array.from(new Set(mockELafdas.map(lafda => lafda.category)))
   }, [])
@@ -77,43 +71,16 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
                            lafda.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            lafda.author.toLowerCase().includes(searchTerm.toLowerCase())
       
-      // Category filter
-      const matchesCategory = filters.categories.length === 0 || 
-                             filters.categories.includes(lafda.category)
-      
-      // Hot filter
-      const matchesHot = !filters.showHotOnly || lafda.isHot
-
-      return matchesSearch && matchesCategory && matchesHot
+      return matchesSearch
     })
 
-    // Sorting
+    // Sort by date (newest first)
     filtered.sort((a, b) => {
-      let comparison = 0
-      
-      switch (filters.sortBy) {
-        case "date":
-          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          break
-        case "views":
-          comparison = a.views - b.views
-          break
-        case "stars":
-          comparison = a.stars - b.stars
-          break
-        case "trending":
-          // Custom trending logic: combination of views, stars, and recency
-          const aScore = a.views * 0.3 + a.stars * 0.5 + (a.isHot ? 500 : 0)
-          const bScore = b.views * 0.3 + b.stars * 0.5 + (b.isHot ? 500 : 0)
-          comparison = aScore - bScore
-          break
-      }
-
-      return filters.sortOrder === "desc" ? -comparison : comparison
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     })
 
     return filtered
-  }, [searchTerm, filters])
+  }, [searchTerm])
 
   return (
     <div className={className}>
@@ -121,9 +88,6 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
       <SearchContainer
         searchValue={searchTerm}
         onSearchChange={setSearchTerm}
-        filters={filters}
-        onFiltersChange={setFilters}
-        availableCategories={availableCategories}
         placeholder="Search e-lafdas by title, description, or author..."
         resultsCount={filteredAndSortedELafdas.length}
         totalCount={mockELafdas.length}
@@ -138,7 +102,9 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
               <div className="flex items-start justify-between">
                 <div className="flex-1">
                   <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
-                    {lafda.title}
+                    <Link href={`/e-lafda/${lafda.id}`} className="hover:underline">
+                      {lafda.title}
+                    </Link>
                     {lafda.isHot && (
                       <span className="ml-2 inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
                          Hot
@@ -180,9 +146,11 @@ export function ELafdaDirectory({ className }: ELafdaDirectoryProps) {
                 </div>
 
                 {/* Action Button */}
-                <Button className="w-full" variant="outline">
-                  View Discussion
-                </Button>
+                <Link href={`/e-lafda/${lafda.id}`}>
+                  <Button className="w-full" variant="outline">
+                    View Discussion
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>

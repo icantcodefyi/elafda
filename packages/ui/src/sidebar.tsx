@@ -7,7 +7,7 @@ import { cva, VariantProps } from "class-variance-authority";
 import { Button } from "./button";
 import { useIsMobile } from "./hooks/use-mobile";
 import { Input } from "./input";
-import { cn } from "./lib/utils";
+import { cn } from ".";
 import { Separator } from "./separator";
 import {
   Sheet,

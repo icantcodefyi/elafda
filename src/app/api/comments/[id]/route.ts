@@ -8,7 +8,7 @@ import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 
 interface RouteContext {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function DELETE(req: NextRequest, { params }: RouteContext) {

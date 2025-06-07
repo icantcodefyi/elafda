@@ -14,7 +14,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
 
 interface PostPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 async function getPost(id: string) {
@@ -46,7 +46,6 @@ async function getPost(id: string) {
 
   return post;
 }
-
 
 export default async function PostPage({ params }: PostPageProps) {
   const { id } = await params;

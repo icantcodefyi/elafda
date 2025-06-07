@@ -3,7 +3,13 @@ import { type ReactionType, type ReactionData } from "~/types/reactions";
 
 export function useReactions(postId: string) {
   const [reactions, setReactions] = useState<ReactionData>({
-    counts: {},
+    counts: {
+      LIKE: 0,
+      DISLIKE: 0,
+      FIRE: 0,
+      HEART: 0,
+      CRY: 0
+    },
     userReaction: null,
   });
   const [loading, setLoading] = useState(true);

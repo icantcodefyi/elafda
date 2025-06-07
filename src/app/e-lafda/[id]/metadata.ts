@@ -4,10 +4,11 @@ import { mockELafdaData } from "~/lib/mock-data";
 export async function generateMetadata({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   // In a real app, you'd fetch the data here
-  const elafda = params.id === "1" ? mockELafdaData : null;
+  const { id } = await params;
+  const elafda = id === "1" ? mockELafdaData : null;
 
   if (!elafda) {
     return {

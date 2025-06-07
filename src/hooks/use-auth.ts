@@ -17,7 +17,6 @@ export function useAuth() {
       setShowSignInDialog(true);
     }
   };
-
   return {
     user: session?.user,
     isSignedIn,
@@ -25,5 +24,7 @@ export function useAuth() {
     showSignInDialog,
     setShowSignInDialog,
     requireAuth,
+    isAdmin: session?.user?.role === "ADMIN",
+    role: session?.user?.role,
   };
 }

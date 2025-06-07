@@ -15,15 +15,23 @@ datasource db {
 }
 
 model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id          String   @id @default(cuid())
+    title       String
+    description Json     // Tiptap JSON content
+    lore        String?  // Highlighted lore block
+    tweetLinks  String[] // Array of tweet/thread URLs
+    images      String[] // Array of uploaded image URLs
+    tags        String[] // Array of tags
+    views       Int      @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
+    authorId String
+    author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-    @@index([name])
+    @@index([title])
+    @@index([authorId])
+    @@index([createdAt])
 }
 
 // Necessary for Next auth

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { ReactionButtons } from "~/components/posts/reaction-buttons";
 import { Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -73,7 +74,7 @@ export function PostsList({ posts }: PostsListProps) {
             </div>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="space-y-4">
             {/* Author and Meta */}
             <div className="text-muted-foreground flex items-center justify-between text-sm">
               <div className="flex items-center gap-3">
@@ -99,6 +100,9 @@ export function PostsList({ posts }: PostsListProps) {
                 </div>
               </div>
             </div>
+
+            {/* Reactions */}
+            <ReactionButtons postId={post.id} />
           </CardContent>
         </Card>
       ))}

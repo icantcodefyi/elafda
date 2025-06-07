@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/await-thenable */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { PostRenderer } from "~/components/posts/post-renderer";
+import { ReactionButtons } from "~/components/posts/reaction-buttons";
 import { db } from "~/server/db";
 import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
@@ -40,7 +42,8 @@ async function getPost(id: string) {
 }
 
 export default async function PostPage({ params }: PostPageProps) {
-  const post = await getPost(params.id);
+  const { id } = await params;
+  const post = await getPost(id);
 
   if (!post) {
     notFound();
@@ -89,11 +92,16 @@ export default async function PostPage({ params }: PostPageProps) {
             )}
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="space-y-6">
             {/* Post Content */}
             <PostRenderer
               content={post.description as unknown as TiptapContent}
             />
+
+            {/* Reactions */}
+            <div className="border-t pt-4">
+              <ReactionButtons postId={post.id} />
+            </div>
           </CardContent>
         </Card>
       </div>

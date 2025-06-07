@@ -4,20 +4,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { MultiSelect } from "~/components/ui/multi-select";
 import { RichTextEditor } from "~/components/editor/rich-text-editor";
 import { useAuth } from "~/hooks/use-auth";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Send, ArrowLeft } from "lucide-react";
 import type { PostFormData, TiptapContent, TiptapNode } from "~/types/editor";
 
 export default function CreatePostPage() {
@@ -126,17 +120,26 @@ export default function CreatePostPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="mx-auto max-w-md">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <h2 className="mb-4 text-xl font-semibold">
-                Authentication Required
-              </h2>
-              <p className="text-muted-foreground mb-4">
-                You need to be signed in to create a post.
-              </p>
-              <Button onClick={() => requireAuth()}>Sign In</Button>
+      <div className="from-background to-muted/20 flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
+        <Card className="bg-background/80 w-full max-w-md border-0 shadow-lg backdrop-blur">
+          <CardContent className="p-8">
+            <div className="space-y-6 text-center">
+              <div className="space-y-2">
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Authentication Required
+                </h2>
+                <p className="text-muted-foreground text-sm leading-relaxed">
+                  You need to be signed in to create a post and share your story
+                  with the community.
+                </p>
+              </div>
+              <Button
+                onClick={() => requireAuth()}
+                size="lg"
+                className="w-full"
+              >
+                Sign In to Continue
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -145,85 +148,128 @@ export default function CreatePostPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Card className="mx-auto max-w-4xl">
-        <CardHeader>
-          <CardTitle>Create New Post</CardTitle>
-          <CardDescription>
+    <div className="from-background via-background to-muted/10 min-h-screen bg-gradient-to-br">
+      <div className="container mx-auto max-w-4xl px-4 py-12">
+        {/* Header Section */}
+        <div className="mb-8 space-y-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="text-muted-foreground hover:text-foreground mb-4 -ml-2"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
+          </Button>
+          <h1 className="text-3xl font-bold tracking-tight">Create New Post</h1>
+          <p className="text-muted-foreground text-lg">
             Share an incident, story, or interesting event with the community.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title */}
-            <div className="space-y-2">
-              <Label htmlFor="title">Title *</Label>
-              <Input
-                id="title"
-                placeholder="What happened? Give it a catchy title..."
-                value={postData.title}
-                onChange={(e) =>
-                  setPostData((prev) => ({ ...prev, title: e.target.value }))
-                }
-                required
-              />
-            </div>
+          </p>
+        </div>
 
-            {/* Tags */}
-            <div className="space-y-2">
-              <Label>Tags</Label>
-              <MultiSelect
-                values={postData.tags}
-                onChange={(tags) => setPostData((prev) => ({ ...prev, tags }))}
-                placeholder="Add tags to help people discover your post..."
-              />
-            </div>
+        <Card className="bg-background/80 border-0 shadow-xl backdrop-blur">
+          <CardContent className="p-8">
+            <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Title Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="title" className="text-base font-semibold">
+                    Title
+                  </Label>
+                  <span className="text-destructive text-xs font-medium">
+                    *
+                  </span>
+                </div>
+                <Input
+                  id="title"
+                  placeholder="What happened? Give it a catchy title..."
+                  value={postData.title}
+                  onChange={(e) =>
+                    setPostData((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  required
+                  className="focus:border-primary h-12 border-2 text-base transition-colors"
+                />
+              </div>
 
-            {/* Rich Text Editor */}
-            <div className="space-y-2">
-              <Label>Content *</Label>
-              <RichTextEditor
-                content={postData.description}
-                onChange={handleEditorChange}
-                onImageUpload={handleImageUpload}
-                placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images."
-              />
-            </div>
+              {/* Tags Section */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold">Tags</Label>
+                <MultiSelect
+                  values={postData.tags}
+                  onChange={(tags) =>
+                    setPostData((prev) => ({ ...prev, tags }))
+                  }
+                  placeholder="Add tags to help people discover your post..."
+                />
+                <p className="text-muted-foreground text-xs">
+                  Add relevant tags to help others find your post. Add comma (,) to separate tags.
+                </p>
+              </div>
 
-            {/* Submit Button */}
-            <div className="flex justify-end gap-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={
-                  !postData.title.trim() ||
-                  !postData.description ||
-                  isSubmitting
-                }
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
-                  </>
-                ) : (
-                  <>
-                    <Send className="mr-2 h-4 w-4" />
-                    Create Post
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              {/* Content Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-semibold">Content</Label>
+                  <span className="text-destructive text-xs font-medium">
+                    *
+                  </span>
+                </div>
+                <div className="border-border focus-within:border-primary rounded-lg border-2 transition-colors">
+                  <RichTextEditor
+                    content={postData.description}
+                    onChange={handleEditorChange}
+                    onImageUpload={handleImageUpload}
+                    placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images."
+                  />
+                </div>
+                <p className="text-muted-foreground text-xs">
+                  Use the rich text editor to format your content, add images,
+                  and embed tweets
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="border-border border-t pt-6">
+                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => router.back()}
+                    disabled={isSubmitting}
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={
+                      !postData.title.trim() ||
+                      !postData.description ||
+                      isSubmitting
+                    }
+                    size="lg"
+                    className="w-full sm:w-auto"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Creating Post...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="mr-2 h-4 w-4" />
+                        Create Post
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

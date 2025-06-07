@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/prefer-regexp-exec */
 "use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -13,7 +15,17 @@ import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import { Separator } from "~/components/ui/separator";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogTrigger,
+} from "~/components/ui/dialog";
 import {
   Bold,
   Italic,
@@ -26,6 +38,8 @@ import {
   MessageSquare,
   Lightbulb,
   Upload,
+  Twitter,
+  AlertCircle,
 } from "lucide-react";
 import { LoreBlock } from "./lore-block";
 import { TweetEmbed } from "./tweet-embed";
@@ -49,6 +63,9 @@ export function RichTextEditor({
   className,
 }: RichTextEditorProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [isTweetDialogOpen, setIsTweetDialogOpen] = useState(false);
+  const [tweetUrl, setTweetUrl] = useState("");
+  const [tweetError, setTweetError] = useState<string | null>(null);
 
   const { startUpload } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
@@ -113,11 +130,46 @@ export function RichTextEditor({
     (editor.chain().focus() as any).setLoreBlock().run();
   };
 
-  const addTweetEmbed = () => {
-    const url = prompt("Enter Twitter/X URL:");
-    if (url) {
-      (editor.chain().focus() as any).setTweetEmbed({ url }).run();
+  const extractTweetId = (url: string): string | null => {
+    if (!url) return null;
+
+    try {
+      // Handle both twitter.com and x.com URLs
+      const twitterMatch = url.match(
+        /(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/,
+      );
+      return twitterMatch?.[1] ?? null;
+    } catch (e) {
+      return null;
     }
+  };
+
+  const handleTweetSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!tweetUrl.trim()) {
+      setTweetError("Please enter a URL");
+      return;
+    }
+
+    const tweetId = extractTweetId(tweetUrl);
+    if (!tweetId) {
+      setTweetError("Invalid Twitter/X URL. Please enter a valid tweet URL.");
+      return;
+    }
+
+    // Add the tweet embed to the editor
+    (editor.chain().focus() as any)
+      .setTweetEmbed({
+        url: tweetUrl.trim(),
+        tweetId,
+      })
+      .run();
+
+    // Reset state and close dialog
+    setTweetUrl("");
+    setTweetError(null);
+    setIsTweetDialogOpen(false);
   };
 
   const triggerFileInput = () => {
@@ -231,14 +283,65 @@ export function RichTextEditor({
             <Lightbulb className="h-4 w-4" />
           </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={addTweetEmbed}
-            title="Add Tweet Embed"
-          >
-            <MessageSquare className="h-4 w-4" />
-          </Button>
+          <Dialog open={isTweetDialogOpen} onOpenChange={setIsTweetDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                variant="ghost"
+                size="sm"
+                title="Add Tweet Embed"
+                onClick={() => {
+                  setTweetUrl("");
+                  setTweetError(null);
+                }}
+              >
+                <MessageSquare className="h-4 w-4" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Twitter className="h-5 w-5 text-blue-500" />
+                  Embed Tweet
+                </DialogTitle>
+                <DialogDescription>
+                  Enter a Twitter/X tweet URL to embed it in your content.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleTweetSubmit} className="space-y-4 pt-2">
+                <div className="space-y-2">
+                  <Input
+                    id="tweetUrl"
+                    value={tweetUrl}
+                    onChange={(e) => {
+                      setTweetUrl(e.target.value);
+                      setTweetError(null);
+                    }}
+                    placeholder="https://twitter.com/username/status/123456789"
+                    className={cn(
+                      "w-full",
+                      tweetError && "border-red-500 focus:border-red-500",
+                    )}
+                  />
+                  {tweetError && (
+                    <div className="flex items-center gap-2 text-sm text-red-600 dark:text-red-400">
+                      <AlertCircle className="h-4 w-4" />
+                      {tweetError}
+                    </div>
+                  )}
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsTweetDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button type="submit">Embed Tweet</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
 
           <Button
             variant="ghost"
@@ -278,7 +381,7 @@ export function RichTextEditor({
       </div>
 
       {/* Editor */}
-      <div className="min-h-[400px]">
+      <div className="min-h-[400px] px-6">
         <EditorContent editor={editor} />
       </div>
     </Card>

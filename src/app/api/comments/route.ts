@@ -29,7 +29,10 @@ export async function GET(req: NextRequest) {
 
     // Get all comments for the post with user info and vote counts
     const comments = await (db as any).comment.findMany({
-      where: { postId },
+      where: {
+        postId,
+        isDeleted: false, // Only show non-deleted comments
+      },
       include: {
         user: {
           select: {

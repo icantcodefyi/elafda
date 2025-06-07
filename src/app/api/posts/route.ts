@@ -73,6 +73,9 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit;
 
     const posts = await db.post.findMany({
+      where: {
+        isDeleted: false, // Only show non-deleted posts
+      },
       include: {
         author: {
           select: {
@@ -89,7 +92,11 @@ export async function GET(request: NextRequest) {
       take: limit,
     });
 
-    const total = await db.post.count();
+    const total = await db.post.count({
+      where: {
+        isDeleted: false,
+      },
+    });
 
     return NextResponse.json({
       posts,

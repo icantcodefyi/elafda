@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import * as React from "react";
@@ -15,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { SignInDialog } from "~/components/auth/sign-in-dialog";
-import { Plus, LogOut, User, Palette } from "lucide-react";
+import { Plus, LogOut, User, Palette, Shield } from "lucide-react";
 import { useTheme } from "./theme-provider";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
@@ -73,7 +74,6 @@ export function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
-
             <Button
               size="sm"
               className="hidden sm:flex"
@@ -85,7 +85,7 @@ export function Header() {
             </Button>
 
             <Button
-              className="sm:hidden h-8 w-8"
+              className="h-8 w-8 sm:hidden"
               onClick={handleNewELafda}
               disabled={isLoading}
             >
@@ -130,10 +130,21 @@ export function Header() {
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>
+                  {user?.role === "ADMIN" && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/admin">
+                          <Shield className="mr-2 h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
-                  <div className="relative flex cursor-default select-none items-center justify-between rounded-sm px-2 text-sm outline-none">
+                  <div className="relative flex cursor-default items-center justify-between rounded-sm px-2 text-sm outline-none select-none">
                     <div className="flex items-center">
-                      <Palette className="mr-2 h-4 w-4 dark:text-muted-foreground" />
+                      <Palette className="dark:text-muted-foreground mr-2 h-4 w-4" />
                       <span className="ml-2 text-sm">Theme</span>
                     </div>
                     <ThemeToggle className="scale-75" />

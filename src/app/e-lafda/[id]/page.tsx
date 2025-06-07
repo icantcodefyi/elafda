@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/await-thenable */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
@@ -16,8 +18,11 @@ interface PostPageProps {
 }
 
 async function getPost(id: string) {
-  const post = await db.post.findUnique({
-    where: { id },
+  const post = await db.post.findFirst({
+    where: {
+      id,
+      isDeleted: false, // Only show non-deleted posts
+    },
     include: {
       author: {
         select: {
@@ -42,6 +47,7 @@ async function getPost(id: string) {
   return post;
 }
 
+
 export default async function PostPage({ params }: PostPageProps) {
   const { id } = await params;
   const post = await getPost(id);
@@ -62,13 +68,15 @@ export default async function PostPage({ params }: PostPageProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Avatar>
-                  <AvatarImage src={post.author.image ?? undefined} />
+                  <AvatarImage src={post.author?.image ?? undefined} />
                   <AvatarFallback>
-                    {post.author.name?.charAt(0)?.toUpperCase()}
+                    {post.author?.name?.charAt(0)?.toUpperCase() ?? "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium">{post.author.name}</p>
+                  <p className="font-medium">
+                    {post.author?.name ?? "Unknown User"}
+                  </p>
                   <p className="text-muted-foreground text-sm">
                     {formatDistanceToNow(new Date(post.createdAt), {
                       addSuffix: true,

@@ -110,6 +110,39 @@ A complete post creation system for E-Lafda platform with rich text editing, cus
 - Added to post display page (`src/app/e-lafda/[id]/page.tsx`)
 - Added to posts list (`src/components/posts/posts-list.tsx`)
 
+## Comment System
+
+### Database
+- **Models**: `Comment`, `CommentVote` in `prisma/schema.prisma`
+- **Comment Fields**: id, content (markdown), postId, userId, parentId, timestamps
+- **Vote Fields**: id, type (UPVOTE/DOWNVOTE), userId, commentId, timestamps
+- **Features**: Nested comments (parent-child), voting system, user ownership
+
+### API Endpoints
+- **File**: `src/app/api/comments/route.ts` - GET (fetch), POST (create)
+- **File**: `src/app/api/comments/[id]/route.ts` - DELETE (owner/admin only)
+- **File**: `src/app/api/comments/votes/route.ts` - POST (vote), DELETE (remove vote)
+- **Features**: Auth protection, nested structure, vote counting
+
+### Components
+- **File**: `src/components/comments/comments-section.tsx` - Main container
+- **File**: `src/components/comments/comment-item.tsx` - Individual comment display
+- **File**: `src/components/comments/comment-form.tsx` - Create/reply form
+- **File**: `src/hooks/use-comments.ts` - State management hook
+- **File**: `src/types/comments.ts` - TypeScript definitions
+
+### Features
+1. **Markdown Support** - Full GitHub Flavored Markdown with sanitization
+2. **Nested Replies** - Up to 3 levels deep with visual indentation
+3. **Voting System** - Reddit-style upvote/downvote with score display
+4. **User Management** - Delete own comments, admin can delete any
+5. **Real-time Counts** - Dynamic comment and vote count updates
+6. **Authentication** - Sign-in required for commenting and voting
+
+### Integration
+- Added to post display page with full comment thread
+- Markdown rendering with `react-markdown`, `remark-gfm`, `rehype-sanitize`
+
 ## Usage
 1. Navigate to `/create` to create posts
 2. Use toolbar for formatting and custom blocks
@@ -117,4 +150,6 @@ A complete post creation system for E-Lafda platform with rich text editing, cus
 4. Add tags for categorization
 5. View posts at `/e-lafda/[id]`
 6. Browse all posts on home page
-7. **React to posts** with emoji buttons (requires authentication) 
+7. **React to posts** with emoji buttons (requires authentication)
+8. **Comment on posts** with markdown support and nested replies
+9. **Vote on comments** with upvote/downvote system 

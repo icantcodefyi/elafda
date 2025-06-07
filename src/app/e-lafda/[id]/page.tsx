@@ -6,6 +6,7 @@ import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { PostRenderer } from "~/components/posts/post-renderer";
 import { ReactionButtons } from "~/components/posts/reaction-buttons";
+import { CommentsSection } from "~/components/comments/comments-section";
 import { db } from "~/server/db";
 import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
@@ -104,6 +105,11 @@ export default async function PostPage({ params }: PostPageProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Comments Section */}
+        <div className="mt-8">
+          <CommentsSection postId={post.id} />
+        </div>
       </div>
     </div>
   );

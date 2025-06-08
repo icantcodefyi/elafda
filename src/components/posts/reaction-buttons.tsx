@@ -72,7 +72,7 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
             )}
             title={user ? `${label} this post` : "Sign in to react"}
           >
-            <FontAwesomeIcon icon={icon} className="mr-1 h-3 w-3" />
+            <FontAwesomeIcon icon={icon} className="h-3 w-3" />
             {count > 0 && (
               <span className="ml-1 text-xs font-medium">{count}</span>
             )}

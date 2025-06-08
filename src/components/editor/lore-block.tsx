@@ -10,7 +10,7 @@ import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import { BookOpen, X, Sparkles } from "lucide-react";
+import { BookOpen, X, Info } from "lucide-react";
 import { useState } from "react";
 
 const LoreBlockComponent = ({
@@ -25,59 +25,38 @@ const LoreBlockComponent = ({
     <NodeViewWrapper className="lore-block">
       <Card
         className={cn(
-          "group relative my-6 overflow-hidden transition-all duration-300",
-          "bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50",
-          "dark:from-violet-950/30 dark:via-purple-950/30 dark:to-indigo-950/30",
-          "border-l-4 border-l-violet-500 hover:border-l-violet-600",
+          "group relative mb-4 transition-all duration-200 py-0",
+          "bg-muted/50 hover:bg-muted/70",
+          "border border-border hover:border-muted-foreground/20",
           "shadow-sm hover:shadow-md",
-          selected && "ring-2 ring-violet-500 ring-offset-2",
+          selected && "ring-2 ring-ring ring-offset-2",
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Decorative background pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-2 right-2">
-            <Sparkles className="h-16 w-16 rotate-12 text-violet-500" />
-          </div>
-          <div className="absolute bottom-2 left-2">
-            <BookOpen className="h-12 w-12 -rotate-12 text-purple-500" />
-          </div>
-        </div>
-
         {/* Remove button */}
         <Button
           variant="ghost"
           size="sm"
           onClick={() => deleteNode()}
           className={cn(
-            "absolute top-2 right-2 z-10 h-7 w-7 rounded-full p-0",
-            "bg-white/80 hover:bg-red-50 dark:bg-gray-900/80 dark:hover:bg-red-950/50",
-            "border border-gray-200 dark:border-gray-700",
-            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-            "text-gray-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 cursor-pointer",
+            "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
+            "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+            "hover:bg-destructive/10 hover:text-destructive",
           )}
         >
           <X className="h-3 w-3" />
         </Button>
 
-        <div className="relative p-6">
+        <div className="relative p-4">
           {/* Header */}
-          <div className="mb-4 flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-violet-100 dark:bg-violet-900/50">
-              <BookOpen className="h-4 w-4 text-violet-600 dark:text-violet-400" />
+          <div className="mb-3 flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-background border">
+              <Info className="h-3.5 w-3.5 text-muted-foreground" />
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold tracking-wide text-violet-700 uppercase dark:text-violet-300">
-                  Lore
-                </span>
-                <div className="h-1 w-1 rounded-full bg-violet-400 dark:bg-violet-500" />
-                <span className="text-xs font-medium text-violet-600/70 dark:text-violet-400/70">
-                  Background Information
-                </span>
-              </div>
-            </div>
+            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              Background Information
+            </span>
           </div>
 
           {/* Content */}
@@ -85,23 +64,18 @@ const LoreBlockComponent = ({
             <NodeViewContent
               className={cn(
                 "prose prose-sm dark:prose-invert max-w-none",
-                "prose-headings:text-gray-800 dark:prose-headings:text-gray-200",
-                "prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-p:leading-relaxed",
-                "prose-strong:text-violet-700 dark:prose-strong:text-violet-300",
-                "prose-em:text-purple-600 dark:prose-em:text-purple-400",
+                "prose-headings:text-foreground prose-headings:font-medium",
+                "prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:text-sm",
+                "prose-strong:text-foreground prose-strong:font-medium",
+                "prose-em:text-foreground",
                 "focus-within:outline-none",
-                "[&_p]:my-2 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0",
+                "[&_p]:my-1.5 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0",
+                "[&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5",
               )}
               as="div"
             />
-
-            {/* Subtle gradient overlay for depth */}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-transparent via-transparent to-violet-50/20 dark:to-violet-950/20" />
           </div>
         </div>
-
-        {/* Bottom accent */}
-        <div className="h-1 w-full bg-gradient-to-r from-violet-400 via-purple-400 to-indigo-400" />
       </Card>
     </NodeViewWrapper>
   );

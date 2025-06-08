@@ -4,12 +4,13 @@ import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 import { useReactions } from "~/hooks/use-reactions";
 import {
-  REACTION_EMOJIS,
+  REACTION_ICONS,
   REACTION_LABELS,
   type ReactionType,
 } from "~/types/reactions";
 import { useAuth } from "~/hooks/use-auth";
 import { Loader2 } from "lucide-react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ReactionButtonsProps {
   postId: string;
@@ -53,7 +54,7 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
       {REACTION_TYPES.map((type) => {
         const count = reactions.counts[type] ?? 0;
         const isActive = reactions.userReaction === type;
-        const emoji = REACTION_EMOJIS[type];
+        const icon = REACTION_ICONS[type];
         const label = REACTION_LABELS[type];
 
         return (
@@ -71,7 +72,7 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
             )}
             title={user ? `${label} this post` : "Sign in to react"}
           >
-            <span className="mr-1">{emoji}</span>
+            <FontAwesomeIcon icon={icon} className="mr-1 h-3 w-3" />
             {count > 0 && (
               <span className="ml-1 text-xs font-medium">{count}</span>
             )}

@@ -33,10 +33,10 @@ export function Header() {
   } = useAuth();
 
   const handleNewELafda = () => {
-    requireAuth(() => {
-      // Navigate to create page or open create modal
-      console.log("Creating new e-lafda...");
-    });
+    if (!isSignedIn) {
+      requireAuth();
+      return;
+    }
   };
 
   const handleSignOut = async () => {
@@ -74,24 +74,44 @@ export function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
-            <Button
-              size="sm"
-              className="hidden sm:flex"
-              onClick={handleNewELafda}
-              disabled={isLoading}
-            >
-              <Plus className="h-4 w-4" />
-              New E-Lafda
-            </Button>
+            {isSignedIn ? (
+              <>
+                <Button size="sm" className="hidden sm:flex" asChild>
+                  <Link href="/create">
+                    <Plus className="h-4 w-4" />
+                    New E-Lafda
+                  </Link>
+                </Button>
 
-            <Button
-              className="h-8 w-8 sm:hidden"
-              onClick={handleNewELafda}
-              disabled={isLoading}
-            >
-              <Plus className="h-4 w-4" />
-              <span className="sr-only">New E-Lafda</span>
-            </Button>
+                <Button className="h-8 w-8 sm:hidden" asChild>
+                  <Link href="/create">
+                    <Plus className="h-4 w-4" />
+                    <span className="sr-only">New E-Lafda</span>
+                  </Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  size="sm"
+                  className="hidden sm:flex"
+                  onClick={handleNewELafda}
+                  disabled={isLoading}
+                >
+                  <Plus className="h-4 w-4" />
+                  New E-Lafda
+                </Button>
+
+                <Button
+                  className="h-8 w-8 sm:hidden"
+                  onClick={handleNewELafda}
+                  disabled={isLoading}
+                >
+                  <Plus className="h-4 w-4" />
+                  <span className="sr-only">New E-Lafda</span>
+                </Button>
+              </>
+            )}
 
             {/* User avatar with dropdown */}
             {isSignedIn && user ? (

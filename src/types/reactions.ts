@@ -1,3 +1,11 @@
+import { 
+  faThumbsUp, 
+  faThumbsDown, 
+  faFire, 
+  faHeart, 
+  faFaceSadTear 
+} from '@fortawesome/free-solid-svg-icons';
+
 export type ReactionType = "LIKE" | "DISLIKE" | "FIRE" | "HEART" | "CRY";
 
 export interface Reaction {
@@ -16,6 +24,15 @@ export interface ReactionData {
   userReaction: ReactionType | null;
 }
 
+export const REACTION_ICONS: Record<ReactionType, typeof faThumbsUp> = {
+  LIKE: faThumbsUp,
+  DISLIKE: faThumbsDown,
+  FIRE: faFire,
+  HEART: faHeart,
+  CRY: faFaceSadTear,
+};
+
+// Keep the old REACTION_EMOJIS for backward compatibility if needed
 export const REACTION_EMOJIS: Record<ReactionType, string> = {
   LIKE: "👍",
   DISLIKE: "👎",

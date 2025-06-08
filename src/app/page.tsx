@@ -26,28 +26,19 @@ export default async function HomePage() {
   const posts = await getPosts();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mx-auto max-w-4xl">
-        {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">E-Lafda</h1>
-            <p className="text-muted-foreground mt-2">
-              Share incidents, stories, and interesting events with the
-              community
-            </p>
-          </div>
-          <CreatePostButton />
-        </div>
-
-        {/* Posts List */}
-        <PostsList
-          posts={posts.map((post) => ({
-            ...post,
-            createdAt: post.createdAt.toISOString(),
-          }))}
-        />
+    <div className="mx-auto max-w-2xl px-4 py-8">
+      {/* Header */}
+      <div className="mb-8 flex items-center justify-between">
+        <h1 className="text-3xl font-bold">E-Lafdas</h1>
       </div>
+
+      {/* Posts List */}
+      <PostsList
+        posts={posts.map((post) => ({
+          ...post,
+          createdAt: post.createdAt.toISOString(),
+        }))}
+      />
     </div>
   );
 }

@@ -4,14 +4,26 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardContent } from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Separator } from "~/components/ui/separator";
 import { MultiSelect } from "~/components/ui/multi-select";
 import { RichTextEditor } from "~/components/editor/rich-text-editor";
 import { useAuth } from "~/hooks/use-auth";
-import { Loader2, Send, ArrowLeft } from "lucide-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { 
+  faArrowLeft,
+  faPaperPlane,
+  faSpinner,
+  faEdit,
+  faTag,
+  faSignInAlt,
+  faExclamationTriangle,
+  faHeading,
+  faAlignLeft
+} from "@fortawesome/free-solid-svg-icons";
 import type { PostFormData, TiptapContent, TiptapNode } from "~/types/editor";
 
 export default function CreatePostPage() {
@@ -120,118 +132,148 @@ export default function CreatePostPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="from-background to-muted/20 flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
-        <Card className="bg-background/80 w-full max-w-md border-0 shadow-lg backdrop-blur">
-          <CardContent className="p-8">
-            <div className="space-y-6 text-center">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight">
-                  Authentication Required
-                </h2>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  You need to be signed in to create a post and share your story
-                  with the community.
-                </p>
-              </div>
-              <Button
-                onClick={() => requireAuth()}
-                size="lg"
-                className="w-full"
-              >
-                Sign In to Continue
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-4 py-6">
+          <div className="mx-auto max-w-2xl">
+            <Card className="border-0 shadow-lg">
+              <CardContent className="p-8">
+                <div className="space-y-6 text-center">
+                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
+                    <FontAwesomeIcon icon={faExclamationTriangle} className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold tracking-tight">
+                      Authentication Required
+                    </h2>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      You need to be signed in to create a post and share your story
+                      with the community.
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => requireAuth()}
+                    size="lg"
+                    className="w-full"
+                  >
+                    <FontAwesomeIcon icon={faSignInAlt} className="mr-2 h-4 w-4" />
+                    Sign In to Continue
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="from-background via-background to-muted/10 min-h-screen bg-gradient-to-br">
-      <div className="container mx-auto max-w-4xl px-4 py-12">
-        {/* Header Section */}
-        <div className="mb-8 space-y-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="text-muted-foreground hover:text-foreground mb-4 -ml-2"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          <h1 className="text-3xl font-bold tracking-tight">Create New Post</h1>
-          <p className="text-muted-foreground text-lg">
-            Share an incident, story, or interesting event with the community.
-          </p>
-        </div>
-
-        <Card className="bg-background/80 border-0 shadow-xl backdrop-blur">
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Title Section */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="title" className="text-base font-semibold">
-                    Title
-                  </Label>
-                  <span className="text-destructive text-xs font-medium">
-                    *
-                  </span>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 py-6">
+        <div className="mx-auto max-w-2xl space-y-6">
+          {/* Header Section */}
+          <div className="space-y-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="text-muted-foreground hover:text-foreground -ml-2"
+            >
+              <FontAwesomeIcon icon={faArrowLeft} className="mr-2 h-4 w-4" />
+              Back
+            </Button>
+          </div>
+          
+          <Card className="border-0 shadow-lg">
+            <CardHeader className="space-y-3 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <FontAwesomeIcon icon={faEdit} className="h-5 w-5 text-primary" />
                 </div>
-                <Input
-                  id="title"
-                  placeholder="What happened? Give it a catchy title..."
-                  value={postData.title}
-                  onChange={(e) =>
-                    setPostData((prev) => ({ ...prev, title: e.target.value }))
-                  }
-                  required
-                  className="focus:border-primary h-12 border-2 text-base transition-colors"
-                />
-              </div>
-
-              {/* Tags Section */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold">Tags</Label>
-                <MultiSelect
-                  values={postData.tags}
-                  onChange={(tags) =>
-                    setPostData((prev) => ({ ...prev, tags }))
-                  }
-                  placeholder="Add tags to help people discover your post..."
-                />
-                <p className="text-muted-foreground text-xs">
-                  Add relevant tags to help others find your post. Add comma (,) to separate tags.
-                </p>
-              </div>
-
-              {/* Content Section */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-base font-semibold">Content</Label>
-                  <span className="text-destructive text-xs font-medium">
-                    *
-                  </span>
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight">Create New Post</h1>
+                  <p className="text-muted-foreground text-sm">
+                    Share an incident, story, or interesting event with the community.
+                  </p>
                 </div>
-                <div className="border-border focus-within:border-primary rounded-lg border-2 transition-colors">
-                  <RichTextEditor
-                    content={postData.description}
-                    onChange={handleEditorChange}
-                    onImageUpload={handleImageUpload}
-                    placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images."
+              </div>
+              <Separator className="bg-border/50" />
+            </CardHeader>
+            
+            <CardContent className="space-y-6 pt-0">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Title Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faHeading} className="h-4 w-4 text-muted-foreground" />
+                    <Label htmlFor="title" className="text-base font-semibold">
+                      Title
+                    </Label>
+                    <span className="text-destructive text-xs font-medium">
+                      *
+                    </span>
+                  </div>
+                  <Input
+                    id="title"
+                    placeholder="What happened? Give it a catchy title..."
+                    value={postData.title}
+                    onChange={(e) =>
+                      setPostData((prev) => ({ ...prev, title: e.target.value }))
+                    }
+                    required
+                    className="focus:border-primary h-12 text-base transition-colors"
                   />
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  Use the rich text editor to format your content, add images,
-                  and embed tweets
-                </p>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="border-border border-t pt-6">
-                <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <Separator className="bg-border/50" />
+
+                {/* Tags Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faTag} className="h-4 w-4 text-muted-foreground" />
+                    <Label className="text-base font-semibold">Tags</Label>
+                  </div>
+                  <MultiSelect
+                    values={postData.tags}
+                    onChange={(tags) =>
+                      setPostData((prev) => ({ ...prev, tags }))
+                    }
+                    placeholder="Add tags to help people discover your post..."
+                  />
+                  <p className="text-muted-foreground text-xs">
+                    Add relevant tags to help others find your post. Add comma (,) to separate tags.
+                  </p>
+                </div>
+
+                <Separator className="bg-border/50" />
+
+                {/* Content Section */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FontAwesomeIcon icon={faAlignLeft} className="h-4 w-4 text-muted-foreground" />
+                    <Label className="text-base font-semibold">Content</Label>
+                    <span className="text-destructive text-xs font-medium">
+                      *
+                    </span>
+                  </div>
+                  <div className="border-border focus-within:border-primary rounded-lg border transition-colors">
+                    <RichTextEditor
+                      content={postData.description}
+                      onChange={handleEditorChange}
+                      onImageUpload={handleImageUpload}
+                      placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images."
+                    />
+                  </div>
+                  <p className="text-muted-foreground text-xs">
+                    Use the rich text editor to format your content, add images,
+                    and embed tweets
+                  </p>
+                </div>
+
+                <Separator className="bg-border/50" />
+
+                {/* Action Buttons */}
+                <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
                   <Button
                     type="button"
                     variant="outline"
@@ -254,21 +296,21 @@ export default function CreatePostPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <FontAwesomeIcon icon={faSpinner} className="mr-2 h-4 w-4 animate-spin" />
                         Creating Post...
                       </>
                     ) : (
                       <>
-                        <Send className="mr-2 h-4 w-4" />
+                        <FontAwesomeIcon icon={faPaperPlane} className="mr-2 h-4 w-4" />
                         Create Post
                       </>
                     )}
                   </Button>
                 </div>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

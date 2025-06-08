@@ -17,12 +17,10 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { SignInDialog } from "~/components/auth/sign-in-dialog";
 import { Plus, LogOut, User, Palette, Shield } from "lucide-react";
-import { useTheme } from "./theme-provider";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
 
 export function Header() {
-  const { theme } = useTheme();
   const {
     user,
     isSignedIn,
@@ -63,7 +61,7 @@ export function Header() {
           >
             <div className="relative h-8 w-8">
               <img
-                src={theme === "dark" ? "/logo-white.svg" : "/logo.svg"}
+                src="/logo.svg"
                 alt={`${siteConfig.name} logo`}
                 width={32}
                 height={32}

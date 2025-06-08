@@ -18,7 +18,7 @@ export function PostClientWrapper({ postId, content }: PostClientWrapperProps) {
   return (
     <>
       {/* Post Content */}
-      <div className="prose prose-sm max-w-none dark:prose-invert">
+      <div className="prose prose-sm dark:prose-invert max-w-none">
         <PostRenderer content={content} />
       </div>
 
@@ -27,8 +27,11 @@ export function PostClientWrapper({ postId, content }: PostClientWrapperProps) {
       {/* Interaction Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-foreground flex items-center gap-2">
-            <FontAwesomeIcon icon={faHeart} className="h-4 w-4 text-muted-foreground" />
+          <h3 className="text-foreground flex items-center gap-2 font-semibold">
+            <FontAwesomeIcon
+              icon={faHeart}
+              className="text-muted-foreground h-4 w-4"
+            />
             Reactions
           </h3>
         </div>
@@ -37,18 +40,8 @@ export function PostClientWrapper({ postId, content }: PostClientWrapperProps) {
 
       {/* Comments Section */}
       <div className="mt-6">
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="pb-4">
-            <h2 className="font-semibold text-foreground flex items-center gap-2">
-              <FontAwesomeIcon icon={faComment} className="h-4 w-4 text-muted-foreground" />
-              Discussion
-            </h2>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <CommentsSection postId={postId} />
-          </CardContent>
-        </Card>
+        <CommentsSection postId={postId} />
       </div>
     </>
   );
-} 
+}

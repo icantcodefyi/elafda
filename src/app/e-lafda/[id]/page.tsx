@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/await-thenable */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
@@ -18,9 +14,6 @@ import {
   faClock, 
   faUser, 
   faTag,
-  faComment,
-  faHeart,
-  faShare
 } from "@fortawesome/free-solid-svg-icons";
 
 interface PostPageProps {

@@ -102,7 +102,7 @@ export function CommentItem({
             className={cn(
               "h-8 w-8 p-0",
               comment.userVote === "UPVOTE" &&
-                "bg-green-100 text-green-600 hover:bg-green-100",
+                "text-green-600 dark:text-green-400 hover:bg-green-100",
             )}
           >
             <ChevronUp className="h-4 w-4" />
@@ -111,8 +111,8 @@ export function CommentItem({
           <span
             className={cn(
               "text-sm font-medium",
-              comment.score > 0 && "text-green-600",
-              comment.score < 0 && "text-red-600",
+              comment.score > 0 && "text-green-600 dark:text-green-400",
+              comment.score < 0 && "text-red-600 dark:text-red-400",
             )}
           >
             {comment.score}
@@ -126,7 +126,7 @@ export function CommentItem({
             className={cn(
               "h-8 w-8 p-0",
               comment.userVote === "DOWNVOTE" &&
-                "bg-red-100 text-red-600 hover:bg-red-100",
+                "text-red-600 dark:text-red-400 hover:bg-red-100",
             )}
           >
             <ChevronDown className="h-4 w-4" />

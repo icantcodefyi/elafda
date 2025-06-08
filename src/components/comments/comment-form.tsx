@@ -48,7 +48,7 @@ export function CommentForm({
   };
 
   return (
-    <Card className="p-4">
+    <Card className="border-0 shadow-none">
       <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
           value={content}

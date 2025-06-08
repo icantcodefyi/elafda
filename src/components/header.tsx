@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { SignInDialog } from "~/components/auth/sign-in-dialog";
+import { ProfileDialog } from "~/components/profile/profile-dialog";
 import { Plus, LogOut, User, Palette, Shield } from "lucide-react";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
@@ -29,6 +30,8 @@ export function Header() {
     setShowSignInDialog,
     requireAuth,
   } = useAuth();
+
+  const [showProfileDialog, setShowProfileDialog] = React.useState(false);
 
   const handleNewELafda = () => {
     if (!isSignedIn) {
@@ -143,7 +146,7 @@ export function Header() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => console.log("Profile clicked")}
+                    onClick={() => setShowProfileDialog(true)}
                   >
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
@@ -186,6 +189,12 @@ export function Header() {
       <SignInDialog
         open={showSignInDialog}
         onOpenChange={setShowSignInDialog}
+      />
+
+      {/* Profile dialog */}
+      <ProfileDialog
+        open={showProfileDialog}
+        onOpenChange={setShowProfileDialog}
       />
     </>
   );

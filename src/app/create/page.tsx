@@ -201,7 +201,7 @@ export default function CreatePostPage() {
             </CardHeader>
             
             <CardContent className="space-y-6 pt-0">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form className="space-y-6">
                 {/* Title Section */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
@@ -285,7 +285,8 @@ export default function CreatePostPage() {
                     Cancel
                   </Button>
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={handleSubmit}
                     disabled={
                       !postData.title.trim() ||
                       !postData.description ||

@@ -20,6 +20,7 @@ import { ProfileDialog } from "~/components/profile/profile-dialog";
 import { Plus, LogOut, User, Palette, Shield } from "lucide-react";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 export function Header() {
   const {
@@ -30,6 +31,9 @@ export function Header() {
     setShowSignInDialog,
     requireAuth,
   } = useAuth();
+
+  const pathname = usePathname();
+  const isAdmin = pathname.startsWith("/admin");
 
   const [showProfileDialog, setShowProfileDialog] = React.useState(false);
 
@@ -53,6 +57,10 @@ export function Header() {
       .toUpperCase()
       .slice(0, 2);
   };
+  
+  if (isAdmin) {
+    return null;
+  }
 
   return (
     <>
@@ -145,9 +153,7 @@ export function Header() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    onClick={() => setShowProfileDialog(true)}
-                  >
+                  <DropdownMenuItem onClick={() => setShowProfileDialog(true)}>
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
                   </DropdownMenuItem>

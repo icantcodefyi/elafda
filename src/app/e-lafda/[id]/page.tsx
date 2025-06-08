@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -70,6 +71,14 @@ export default async function PostPage({ params }: PostPageProps) {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-6">
+          {/* Back to Home Button */}
+          <Link 
+            href="/" 
+            className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200 hover:underline"
+          >
+            Back to Home
+          </Link>
+
           {/* Main Post Card */}
           <Card className="border-0 shadow-lg">
             <CardHeader className="space-y-6 pb-4">

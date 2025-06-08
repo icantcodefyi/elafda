@@ -7,6 +7,7 @@ import { ThemeProvider } from "~/components/theme-provider";
 import { SessionProviderWrapper } from "~/components/providers/session-provider";
 import { Header } from "~/components/header";
 import { Footer } from "~/components/footer";
+import { QueryProvider } from "~/components/providers/query-provider";
 
 export const metadata: Metadata = {
   title: {
@@ -29,13 +30,15 @@ export default function RootLayout({
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
       <body>
         <SessionProviderWrapper>
-          <ThemeProvider defaultTheme="light" storageKey="elafda-ui-theme">
-            <div className="relative flex min-h-screen flex-col">
-              <Header />
-              <main className="flex-1">{children}</main>
-              <Footer />
-            </div>
-          </ThemeProvider>
+          <QueryProvider>
+            <ThemeProvider defaultTheme="light" storageKey="elafda-ui-theme">
+              <div className="relative flex min-h-screen flex-col">
+                <Header />
+                <main className="flex-1">{children}</main>
+                <Footer />
+              </div>
+            </ThemeProvider>
+          </QueryProvider>
         </SessionProviderWrapper>
       </body>
     </html>

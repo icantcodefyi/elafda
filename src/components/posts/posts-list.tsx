@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { ReactionButtons } from "~/components/posts/reaction-buttons";
-import { Eye } from "lucide-react";
+import { Eye, Loader2, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { usePostsQuery } from "~/hooks/use-posts-query";
+import { Button } from "~/components/ui/button";
 
 interface Post {
   id: string;
@@ -23,11 +25,37 @@ interface Post {
   };
 }
 
-interface PostsListProps {
-  posts: Post[];
-}
+export function PostsList() {
+  const { data, isLoading, error, refetch } = usePostsQuery();
 
-export function PostsList({ posts }: PostsListProps) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-muted-foreground" />
+          <p className="mt-2 text-sm text-muted-foreground">Loading posts...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="py-12 text-center">
+        <AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
+        <h3 className="mt-4 text-lg font-semibold">Failed to load posts</h3>
+        <p className="text-muted-foreground">
+          {error instanceof Error ? error.message : "Something went wrong"}
+        </p>
+        <Button onClick={() => refetch()} className="mt-4">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
+
+  const posts = data?.posts ?? [];
+
   if (posts.length === 0) {
     return (
       <div className="py-12 text-center">

@@ -1,30 +1,8 @@
+"use client";
+
 import { PostsList } from "~/components/posts/posts-list";
-import { CreatePostButton } from "~/components/navigation/create-post-button";
-import { db } from "~/server/db";
 
-async function getPosts() {
-  const posts = await db.post.findMany({
-    include: {
-      author: {
-        select: {
-          id: true,
-          name: true,
-          image: true,
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-    take: 20,
-  });
-
-  return posts;
-}
-
-export default async function HomePage() {
-  const posts = await getPosts();
-
+export default function HomePage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       {/* Header */}
@@ -33,12 +11,7 @@ export default async function HomePage() {
       </div>
 
       {/* Posts List */}
-      <PostsList
-        posts={posts.map((post) => ({
-          ...post,
-          createdAt: post.createdAt.toISOString(),
-        }))}
-      />
+      <PostsList />
     </div>
   );
 }

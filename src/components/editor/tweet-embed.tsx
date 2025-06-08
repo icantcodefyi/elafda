@@ -227,7 +227,7 @@ const TweetEmbedComponent = ({
                   No Tweet URL Set
                 </h3>
                 <p className="mb-4 text-xs text-muted-foreground max-w-sm">
-                  Click "Add URL" to embed a tweet from Twitter/X
+                  Click &quot;Add URL&quot; to embed a tweet from Twitter/X
                 </p>
                 <Button
                   variant="outline"

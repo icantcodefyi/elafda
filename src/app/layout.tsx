@@ -16,6 +16,19 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   icons: [{ rel: "icon", url: "/logo.svg" }],
+  openGraph: {
+    images: [
+      {
+        url: "/og.png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og.png"],
+    title: siteConfig.name,
+    description: siteConfig.description,
+  },  
 };
 
 const geist = Geist({

@@ -1,6 +1,11 @@
-"use client";
-
 import { PostsList } from "~/components/posts/posts-list";
+import { type Metadata } from "next";
+
+export const metadata: Metadata = {
+  openGraph: {
+    images: [{ url: "/og.png" }],
+  },
+};
 
 export default function HomePage() {
   return (

@@ -21,7 +21,6 @@ interface PostPageProps {
 }
 
 async function getPost(id: string) {
-  try {
     const post = await db.post.findFirst({
       where: {
         id,
@@ -42,22 +41,7 @@ async function getPost(id: string) {
       return null;
     }
 
-    // Increment view count - don't fail if this fails
-    try {
-      await db.post.update({
-        where: { id },
-        data: { views: { increment: 1 } },
-      });
-    } catch (viewError) {
-      // Log the error but don't fail the request
-      console.error("Failed to increment view count:", viewError);
-    }
-
     return post;
-  } catch (error) {
-    console.error("Error fetching post:", error);
-    throw error; // Re-throw to trigger error boundary
-  }
 }
 
 export default async function PostPage({ params }: PostPageProps) {

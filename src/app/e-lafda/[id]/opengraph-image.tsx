@@ -1,12 +1,12 @@
-import { readFileSync } from 'node:fs';
-import { generateOGImage } from './og';
-import { db } from '~/server/db';
-import { notFound } from 'next/navigation';
-import { ImageResponse } from 'next/og';
+import { readFileSync } from "node:fs";
+import { generateOGImage } from "./og";
+import { db } from "~/server/db";
+import { notFound } from "next/navigation";
+import { ImageResponse } from "next/og";
 
-const font = readFileSync('./public/fonts/Inter-Regular.ttf');
-const fontSemiBold = readFileSync('./public/fonts/Inter-SemiBold.ttf');
-const fontBold = readFileSync('./public/fonts/Inter-Bold.ttf');
+const font = readFileSync("./public/fonts/Inter-Regular.ttf");
+const fontSemiBold = readFileSync("./public/fonts/Inter-SemiBold.ttf");
+const fontBold = readFileSync("./public/fonts/Inter-Bold.ttf");
 
 async function getPost(id: string) {
   const post = await db.post.findFirst({
@@ -28,50 +28,56 @@ async function getPost(id: string) {
   return post;
 }
 
-export default async function Image({ params }: { params: Promise<{ id: string }> }) {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const post = await getPost(id);
-  
+
   if (!post) notFound();
 
   // Get the first tag or use a default
-  const tag = post.tags.length > 0 ? post.tags[0]! : 'e-lafda';
+  const tag = post.tags.length > 0 ? post.tags[0]! : "e-lafda";
 
   return generateOGImage({
-    primaryTextColor: 'rgb(240,240,240)',
+    primaryTextColor: "rgb(240,240,240)",
     title: post.title,
-    description: post.lore ?? 'Check out this e-lafda discussion',
+    description: post.lore ?? "Check out this e-lafda discussion",
     tag: tag,
     fonts: [
       {
-        name: 'Inter',
+        name: "Inter",
         data: font,
         weight: 400,
       },
       {
-        name: 'Inter',
+        name: "Inter",
         data: fontSemiBold,
         weight: 600,
       },
       {
-        name: 'Inter',
+        name: "Inter",
         data: fontBold,
         weight: 700,
-      }
+      },
     ],
   });
 }
 
-export const alt = 'E-Lafda Post';
+export const alt = "E-Lafda Post";
 export const size = {
   width: 1200,
   height: 630,
 };
-export const contentType = 'image/png';
+export const contentType = "image/png";
 
-export async function generateStaticParams(): Promise<{
-  id: string;
-}[]> {
+export async function generateStaticParams(): Promise<
+  {
+    id: string;
+  }[]
+> {
   const posts = await db.post.findMany({
     where: {
       isDeleted: false,

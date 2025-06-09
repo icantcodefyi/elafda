@@ -8,7 +8,7 @@ export function useReactions(postId: string) {
       DISLIKE: 0,
       FIRE: 0,
       HEART: 0,
-      CRY: 0
+      CRY: 0,
     },
     userReaction: null,
   });

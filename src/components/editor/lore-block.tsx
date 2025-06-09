@@ -25,11 +25,11 @@ const LoreBlockComponent = ({
     <NodeViewWrapper className="lore-block">
       <Card
         className={cn(
-          "group relative mb-4 transition-all duration-200 py-0",
+          "group relative mb-4 py-0 transition-all duration-200",
           "bg-muted/50 hover:bg-muted/70",
-          "border border-border hover:border-muted-foreground/20",
+          "border-border hover:border-muted-foreground/20 border",
           "shadow-sm hover:shadow-md",
-          selected && "ring-2 ring-ring ring-offset-2",
+          selected && "ring-ring ring-2 ring-offset-2",
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -41,7 +41,7 @@ const LoreBlockComponent = ({
           onClick={() => deleteNode()}
           className={cn(
             "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
-            "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
             "hover:bg-destructive/10 hover:text-destructive",
           )}
         >
@@ -51,10 +51,10 @@ const LoreBlockComponent = ({
         <div className="relative p-4">
           {/* Header */}
           <div className="mb-3 flex items-center gap-2">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-background border">
-              <Info className="h-3.5 w-3.5 text-muted-foreground" />
+            <div className="bg-background flex h-6 w-6 items-center justify-center rounded-md border">
+              <Info className="text-muted-foreground h-3.5 w-3.5" />
             </div>
-            <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+            <span className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
               Background Information
             </span>
           </div>
@@ -70,7 +70,7 @@ const LoreBlockComponent = ({
                 "prose-em:text-foreground",
                 "focus-within:outline-none",
                 "[&_p]:my-1.5 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0",
-                "[&_ul]:my-2 [&_ol]:my-2 [&_li]:my-0.5",
+                "[&_li]:my-0.5 [&_ol]:my-2 [&_ul]:my-2",
               )}
               as="div"
             />

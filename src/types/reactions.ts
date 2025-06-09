@@ -1,10 +1,10 @@
-import { 
-  faThumbsUp, 
-  faThumbsDown, 
-  faFire, 
-  faHeart, 
-  faFaceSadTear 
-} from '@fortawesome/free-solid-svg-icons';
+import {
+  faThumbsUp,
+  faThumbsDown,
+  faFire,
+  faHeart,
+  faFaceSadTear,
+} from "@fortawesome/free-solid-svg-icons";
 
 export type ReactionType = "LIKE" | "DISLIKE" | "FIRE" | "HEART" | "CRY";
 
@@ -17,7 +17,7 @@ export interface Reaction {
   updatedAt: Date;
 }
 
-export type ReactionCounts = Record<ReactionType, number>
+export type ReactionCounts = Record<ReactionType, number>;
 
 export interface ReactionData {
   counts: ReactionCounts;

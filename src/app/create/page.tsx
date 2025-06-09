@@ -13,7 +13,7 @@ import { MultiSelect } from "~/components/ui/multi-select";
 import { RichTextEditor } from "~/components/editor/rich-text-editor";
 import { useAuth } from "~/hooks/use-auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
+import {
   faArrowLeft,
   faPaperPlane,
   faSpinner,
@@ -22,7 +22,7 @@ import {
   faSignInAlt,
   faExclamationTriangle,
   faHeading,
-  faAlignLeft
+  faAlignLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import type { PostFormData, TiptapContent, TiptapNode } from "~/types/editor";
 
@@ -132,22 +132,25 @@ export default function CreatePostPage() {
 
   if (!isSignedIn) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background min-h-screen">
         <div className="container mx-auto px-4 py-6">
           <div className="mx-auto max-w-2xl">
             <Card className="border-0 shadow-lg">
               <CardContent className="p-8">
                 <div className="space-y-6 text-center">
-                  <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <FontAwesomeIcon icon={faExclamationTriangle} className="h-8 w-8 text-muted-foreground" />
+                  <div className="bg-muted mx-auto flex h-16 w-16 items-center justify-center rounded-full">
+                    <FontAwesomeIcon
+                      icon={faExclamationTriangle}
+                      className="text-muted-foreground h-8 w-8"
+                    />
                   </div>
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold tracking-tight">
                       Authentication Required
                     </h2>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      You need to be signed in to create a post and share your story
-                      with the community.
+                      You need to be signed in to create a post and share your
+                      story with the community.
                     </p>
                   </div>
                   <Button
@@ -155,7 +158,10 @@ export default function CreatePostPage() {
                     size="lg"
                     className="w-full"
                   >
-                    <FontAwesomeIcon icon={faSignInAlt} className="mr-2 h-4 w-4" />
+                    <FontAwesomeIcon
+                      icon={faSignInAlt}
+                      className="mr-2 h-4 w-4"
+                    />
                     Sign In to Continue
                   </Button>
                 </div>
@@ -168,7 +174,7 @@ export default function CreatePostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <div className="container mx-auto px-4 py-6">
         <div className="mx-auto max-w-2xl space-y-6">
           {/* Header Section */}
@@ -183,29 +189,38 @@ export default function CreatePostPage() {
               Back
             </Button>
           </div>
-          
+
           <Card className="border-0 shadow-lg">
             <CardHeader className="space-y-3 pb-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-                  <FontAwesomeIcon icon={faEdit} className="h-5 w-5 text-primary" />
+                <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
+                  <FontAwesomeIcon
+                    icon={faEdit}
+                    className="text-primary h-5 w-5"
+                  />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold tracking-tight">Create New Post</h1>
+                  <h1 className="text-2xl font-bold tracking-tight">
+                    Create New Post
+                  </h1>
                   <p className="text-muted-foreground text-sm">
-                    Share an incident, story, or interesting event with the community.
+                    Share an incident, story, or interesting event with the
+                    community.
                   </p>
                 </div>
               </div>
               <Separator className="bg-border/50" />
             </CardHeader>
-            
+
             <CardContent className="space-y-6 pt-0">
               <form className="space-y-6">
                 {/* Title Section */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faHeading} className="h-4 w-4 text-muted-foreground" />
+                    <FontAwesomeIcon
+                      icon={faHeading}
+                      className="text-muted-foreground h-4 w-4"
+                    />
                     <Label htmlFor="title" className="text-base font-semibold">
                       Title
                     </Label>
@@ -218,7 +233,10 @@ export default function CreatePostPage() {
                     placeholder="What happened? Give it a catchy title..."
                     value={postData.title}
                     onChange={(e) =>
-                      setPostData((prev) => ({ ...prev, title: e.target.value }))
+                      setPostData((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
                     }
                     required
                     className="focus:border-primary h-12 text-base transition-colors"
@@ -230,7 +248,10 @@ export default function CreatePostPage() {
                 {/* Tags Section */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faTag} className="h-4 w-4 text-muted-foreground" />
+                    <FontAwesomeIcon
+                      icon={faTag}
+                      className="text-muted-foreground h-4 w-4"
+                    />
                     <Label className="text-base font-semibold">Tags</Label>
                   </div>
                   <MultiSelect
@@ -241,7 +262,8 @@ export default function CreatePostPage() {
                     placeholder="Add tags to help people discover your post..."
                   />
                   <p className="text-muted-foreground text-xs">
-                    Add relevant tags to help others find your post. Add comma (,) to separate tags.
+                    Add relevant tags to help others find your post. Add comma
+                    (,) to separate tags.
                   </p>
                 </div>
 
@@ -250,7 +272,10 @@ export default function CreatePostPage() {
                 {/* Content Section */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <FontAwesomeIcon icon={faAlignLeft} className="h-4 w-4 text-muted-foreground" />
+                    <FontAwesomeIcon
+                      icon={faAlignLeft}
+                      className="text-muted-foreground h-4 w-4"
+                    />
                     <Label className="text-base font-semibold">Content</Label>
                     <span className="text-destructive text-xs font-medium">
                       *
@@ -297,12 +322,18 @@ export default function CreatePostPage() {
                   >
                     {isSubmitting ? (
                       <>
-                        <FontAwesomeIcon icon={faSpinner} className="mr-2 h-4 w-4 animate-spin" />
+                        <FontAwesomeIcon
+                          icon={faSpinner}
+                          className="mr-2 h-4 w-4 animate-spin"
+                        />
                         Creating Post...
                       </>
                     ) : (
                       <>
-                        <FontAwesomeIcon icon={faPaperPlane} className="mr-2 h-4 w-4" />
+                        <FontAwesomeIcon
+                          icon={faPaperPlane}
+                          className="mr-2 h-4 w-4"
+                        />
                         Create Post
                       </>
                     )}

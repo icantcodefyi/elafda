@@ -3,8 +3,8 @@ import { type ReactionType, type ReactionData } from "~/types/reactions";
 
 // Query key factory
 const reactionKeys = {
-  all: ['reactions'] as const,
-  post: (postId: string) => [...reactionKeys.all, 'post', postId] as const,
+  all: ["reactions"] as const,
+  post: (postId: string) => [...reactionKeys.all, "post", postId] as const,
 };
 
 // API functions
@@ -16,7 +16,13 @@ async function fetchReactions(postId: string): Promise<ReactionData> {
   return response.json() as Promise<ReactionData>;
 }
 
-async function toggleReaction({ postId, type }: { postId: string; type: ReactionType }) {
+async function toggleReaction({
+  postId,
+  type,
+}: {
+  postId: string;
+  type: ReactionType;
+}) {
   const response = await fetch("/api/reactions", {
     method: "POST",
     headers: {
@@ -63,7 +69,7 @@ export function useReactionsQuery(postId: string) {
 
   // Toggle reaction mutation
   const toggleMutation = useMutation({
-    mutationFn: ({ type }: { type: ReactionType }) => 
+    mutationFn: ({ type }: { type: ReactionType }) =>
       toggleReaction({ postId, type }),
     onMutate: async ({ type }) => {
       // Cancel outgoing refetches
@@ -71,18 +77,18 @@ export function useReactionsQuery(postId: string) {
 
       // Snapshot previous value
       const previousReactions = queryClient.getQueryData<ReactionData>(
-        reactionKeys.post(postId)
+        reactionKeys.post(postId),
       );
 
       // Optimistically update
       if (previousReactions) {
         const newCounts = { ...previousReactions.counts };
-        
+
         // Remove previous reaction count if user had one
         if (previousReactions.userReaction) {
           newCounts[previousReactions.userReaction] = Math.max(
             0,
-            (newCounts[previousReactions.userReaction] ?? 0) - 1
+            (newCounts[previousReactions.userReaction] ?? 0) - 1,
           );
         }
 
@@ -110,13 +116,15 @@ export function useReactionsQuery(postId: string) {
       if (context?.previousReactions) {
         queryClient.setQueryData(
           reactionKeys.post(postId),
-          context.previousReactions
+          context.previousReactions,
         );
       }
     },
     onSettled: () => {
       // Refetch to ensure we have the latest data
-      void queryClient.invalidateQueries({ queryKey: reactionKeys.post(postId) });
+      void queryClient.invalidateQueries({
+        queryKey: reactionKeys.post(postId),
+      });
     },
   });
 
@@ -127,14 +135,14 @@ export function useReactionsQuery(postId: string) {
       await queryClient.cancelQueries({ queryKey: reactionKeys.post(postId) });
 
       const previousReactions = queryClient.getQueryData<ReactionData>(
-        reactionKeys.post(postId)
+        reactionKeys.post(postId),
       );
 
       if (previousReactions?.userReaction) {
         const newCounts = { ...previousReactions.counts };
         newCounts[previousReactions.userReaction] = Math.max(
           0,
-          (newCounts[previousReactions.userReaction] ?? 0) - 1
+          (newCounts[previousReactions.userReaction] ?? 0) - 1,
         );
 
         queryClient.setQueryData<ReactionData>(reactionKeys.post(postId), {
@@ -149,12 +157,14 @@ export function useReactionsQuery(postId: string) {
       if (context?.previousReactions) {
         queryClient.setQueryData(
           reactionKeys.post(postId),
-          context.previousReactions
+          context.previousReactions,
         );
       }
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: reactionKeys.post(postId) });
+      void queryClient.invalidateQueries({
+        queryKey: reactionKeys.post(postId),
+      });
     },
   });
 
@@ -173,4 +183,4 @@ export function useReactionsQuery(postId: string) {
     toggleReaction: handleToggleReaction,
     isToggling: toggleMutation.isPending || removeMutation.isPending,
   };
-} 
+}

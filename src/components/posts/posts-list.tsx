@@ -32,8 +32,8 @@ export function PostsList() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-muted-foreground" />
-          <p className="mt-2 text-sm text-muted-foreground">Loading posts...</p>
+          <Loader2 className="text-muted-foreground mx-auto h-8 w-8 animate-spin" />
+          <p className="text-muted-foreground mt-2 text-sm">Loading posts...</p>
         </div>
       </div>
     );
@@ -42,7 +42,7 @@ export function PostsList() {
   if (error) {
     return (
       <div className="py-12 text-center">
-        <AlertTriangle className="mx-auto h-12 w-12 text-destructive" />
+        <AlertTriangle className="text-destructive mx-auto h-12 w-12" />
         <h3 className="mt-4 text-lg font-semibold">Failed to load posts</h3>
         <p className="text-muted-foreground">
           {error instanceof Error ? error.message : "Something went wrong"}

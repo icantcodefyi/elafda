@@ -9,10 +9,10 @@ import { db } from "~/server/db";
 import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { 
-  faEye, 
-  faClock, 
-  faUser, 
+import {
+  faEye,
+  faClock,
+  faUser,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -50,12 +50,12 @@ async function getPost(id: string) {
       });
     } catch (viewError) {
       // Log the error but don't fail the request
-      console.error('Failed to increment view count:', viewError);
+      console.error("Failed to increment view count:", viewError);
     }
 
     return post;
   } catch (error) {
-    console.error('Error fetching post:', error);
+    console.error("Error fetching post:", error);
     throw error; // Re-throw to trigger error boundary
   }
 }
@@ -63,9 +63,9 @@ async function getPost(id: string) {
 export default async function PostPage({ params }: PostPageProps) {
   try {
     const { id } = await params;
-    
+
     // Validate the ID parameter
-    if (!id || typeof id !== 'string' || id.trim() === '') {
+    if (!id || typeof id !== "string" || id.trim() === "") {
       notFound();
     }
 
@@ -76,13 +76,13 @@ export default async function PostPage({ params }: PostPageProps) {
     }
 
     return (
-      <div className="min-h-screen bg-background">
+      <div className="bg-background min-h-screen">
         <div className="container mx-auto px-4 py-6">
           <div className="mx-auto max-w-2xl space-y-6">
             {/* Back to Home Button */}
-            <Link 
-              href="/" 
-              className="inline-flex items-center text-muted-foreground hover:text-foreground transition-colors duration-200 hover:underline"
+            <Link
+              href="/"
+              className="text-muted-foreground hover:text-foreground inline-flex items-center transition-colors duration-200 hover:underline"
             >
               Back to Home
             </Link>
@@ -92,20 +92,23 @@ export default async function PostPage({ params }: PostPageProps) {
               <CardHeader className="space-y-6 pb-4">
                 {/* Post Title */}
                 <div className="space-y-3">
-                  <h1 className="text-2xl font-bold leading-tight tracking-tight text-foreground">
+                  <h1 className="text-foreground text-2xl leading-tight font-bold tracking-tight">
                     {post.title}
                   </h1>
-                  
+
                   {/* Tags */}
                   {post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {post.tags.map((tag) => (
-                        <Badge 
-                          key={tag} 
-                          variant="secondary" 
+                        <Badge
+                          key={tag}
+                          variant="secondary"
                           className="flex items-center gap-1 text-xs"
                         >
-                          <FontAwesomeIcon icon={faTag} className="h-2.5 w-2.5" />
+                          <FontAwesomeIcon
+                            icon={faTag}
+                            className="h-2.5 w-2.5"
+                          />
                           {tag}
                         </Badge>
                       ))}
@@ -118,9 +121,9 @@ export default async function PostPage({ params }: PostPageProps) {
                 {/* Author and Meta Information */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 ring-2 ring-border/20">
-                      <AvatarImage 
-                        src={post.author?.image ?? undefined} 
+                    <Avatar className="ring-border/20 h-10 w-10 ring-2">
+                      <AvatarImage
+                        src={post.author?.image ?? undefined}
                         alt={post.author?.name ?? "User avatar"}
                       />
                       <AvatarFallback className="bg-muted text-muted-foreground">
@@ -128,10 +131,10 @@ export default async function PostPage({ params }: PostPageProps) {
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                      <p className="font-medium text-foreground">
+                      <p className="text-foreground font-medium">
                         {post.author?.name ?? "Anonymous User"}
                       </p>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <div className="text-muted-foreground flex items-center gap-1 text-xs">
                         <FontAwesomeIcon icon={faClock} className="h-3 w-3" />
                         <span>
                           {formatDistanceToNow(new Date(post.createdAt), {
@@ -141,14 +144,14 @@ export default async function PostPage({ params }: PostPageProps) {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* View Count */}
-                  <div className="flex items-center gap-1.5 rounded-full bg-muted/50 px-3 py-1.5">
-                    <FontAwesomeIcon 
-                      icon={faEye} 
-                      className="h-3.5 w-3.5 text-muted-foreground" 
+                  <div className="bg-muted/50 flex items-center gap-1.5 rounded-full px-3 py-1.5">
+                    <FontAwesomeIcon
+                      icon={faEye}
+                      className="text-muted-foreground h-3.5 w-3.5"
                     />
-                    <span className="text-sm font-medium text-muted-foreground">
+                    <span className="text-muted-foreground text-sm font-medium">
                       {post.views.toLocaleString()}
                     </span>
                   </div>
@@ -156,7 +159,7 @@ export default async function PostPage({ params }: PostPageProps) {
               </CardHeader>
 
               <CardContent className="space-y-6 pt-0">
-                <PostClientWrapper 
+                <PostClientWrapper
                   postId={post.id}
                   content={post.description as unknown as TiptapContent}
                 />
@@ -169,7 +172,7 @@ export default async function PostPage({ params }: PostPageProps) {
       </div>
     );
   } catch (error) {
-    console.error('Error in PostPage:', error);
+    console.error("Error in PostPage:", error);
     throw error; // Re-throw to trigger error boundary
   }
 }

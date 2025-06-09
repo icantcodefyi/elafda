@@ -104,11 +104,11 @@ const TweetEmbedComponent = ({
     <NodeViewWrapper className="tweet-embed">
       <Card
         className={cn(
-          "group relative mb-4 transition-all duration-200 py-0",
+          "group relative mb-4 py-0 transition-all duration-200",
           "bg-muted/50 hover:bg-muted/70",
-          "border border-border hover:border-muted-foreground/20",
+          "border-border hover:border-muted-foreground/20 border",
           "shadow-sm hover:shadow-md",
-          selected && "ring-2 ring-ring ring-offset-2",
+          selected && "ring-ring ring-2 ring-offset-2",
         )}
       >
         {/* Remove button */}
@@ -118,7 +118,7 @@ const TweetEmbedComponent = ({
           onClick={() => deleteNode()}
           className={cn(
             "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
-            "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
             "hover:bg-destructive/10 hover:text-destructive",
           )}
         >
@@ -129,15 +129,15 @@ const TweetEmbedComponent = ({
           {/* Header */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-background border">
-                <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+              <div className="bg-background flex h-6 w-6 items-center justify-center rounded-md border">
+                <MessageSquare className="text-muted-foreground h-3.5 w-3.5" />
               </div>
-              <span className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+              <span className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
                 Tweet Embed
               </span>
               {hasValidTweet && (
                 <>
-                  <div className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                  <div className="bg-muted-foreground/50 h-1 w-1 rounded-full" />
                   <a
                     href={node.attrs.url}
                     target="_blank"
@@ -155,10 +155,10 @@ const TweetEmbedComponent = ({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 text-xs px-3"
+                  className="h-7 px-3 text-xs"
                   onClick={() => setInputUrl(node.attrs.url ?? "")}
                 >
-                  <Edit className="h-3 w-3 mr-1" />
+                  <Edit className="mr-1 h-3 w-3" />
                   {hasValidTweet ? "Edit" : "Add URL"}
                 </Button>
               </DialogTrigger>
@@ -188,7 +188,7 @@ const TweetEmbedComponent = ({
                       )}
                     />
                     {error && (
-                      <div className="flex items-center gap-2 text-sm text-destructive">
+                      <div className="text-destructive flex items-center gap-2 text-sm">
                         <AlertCircle className="h-4 w-4" />
                         {error}
                       </div>
@@ -221,12 +221,12 @@ const TweetEmbedComponent = ({
           {/* Content */}
           <div className="relative">
             {!hasValidTweet ? (
-              <div className="flex flex-col items-center justify-center py-8 text-center border-2 border-dashed border-border rounded-lg">
-                <MessageSquare className="mb-3 h-8 w-8 text-muted-foreground" />
-                <h3 className="mb-2 text-sm font-medium text-foreground">
+              <div className="border-border flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-8 text-center">
+                <MessageSquare className="text-muted-foreground mb-3 h-8 w-8" />
+                <h3 className="text-foreground mb-2 text-sm font-medium">
                   No Tweet URL Set
                 </h3>
-                <p className="mb-4 text-xs text-muted-foreground max-w-sm">
+                <p className="text-muted-foreground mb-4 max-w-sm text-xs">
                   Click &quot;Add URL&quot; to embed a tweet from Twitter/X
                 </p>
                 <Button

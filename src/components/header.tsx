@@ -57,7 +57,7 @@ export function Header() {
       .toUpperCase()
       .slice(0, 2);
   };
-  
+
   if (isAdmin) {
     return null;
   }

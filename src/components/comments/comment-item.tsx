@@ -102,7 +102,7 @@ export function CommentItem({
             className={cn(
               "h-8 w-8 p-0",
               comment.userVote === "UPVOTE" &&
-                "text-green-600 dark:text-green-400 hover:bg-green-100",
+                "text-green-600 hover:bg-green-100 dark:text-green-400",
             )}
           >
             <ChevronUp className="h-4 w-4" />
@@ -126,7 +126,7 @@ export function CommentItem({
             className={cn(
               "h-8 w-8 p-0",
               comment.userVote === "DOWNVOTE" &&
-                "text-red-600 dark:text-red-400 hover:bg-red-100",
+                "text-red-600 hover:bg-red-100 dark:text-red-400",
             )}
           >
             <ChevronDown className="h-4 w-4" />

@@ -23,11 +23,11 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
   if (isLoading) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-4xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-4xl">
           <DialogHeader>
             <DialogTitle>Profile</DialogTitle>
           </DialogHeader>
-          <div className="text-center py-8">Loading...</div>
+          <div className="py-8 text-center">Loading...</div>
         </DialogContent>
       </Dialog>
     );
@@ -35,7 +35,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <DialogTitle className="text-2xl font-bold">Profile</DialogTitle>
@@ -52,14 +52,19 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-4">
                   <Avatar className="h-16 w-16">
-                    <AvatarImage src={user?.image ?? ""} alt={user?.name ?? ""} />
+                    <AvatarImage
+                      src={user?.image ?? ""}
+                      alt={user?.name ?? ""}
+                    />
                     <AvatarFallback>
                       {user?.name?.charAt(0)?.toUpperCase() ?? "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <h3 className="text-lg font-semibold">{user?.name}</h3>
-                    <p className="text-muted-foreground text-sm">{user?.email}</p>
+                    <p className="text-muted-foreground text-sm">
+                      {user?.email}
+                    </p>
                   </div>
                 </div>
 
@@ -67,7 +72,9 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
                   <div className="flex justify-between">
                     <span className="font-medium">Role:</span>
                     <Badge
-                      variant={user?.role === "ADMIN" ? "destructive" : "secondary"}
+                      variant={
+                        user?.role === "ADMIN" ? "destructive" : "secondary"
+                      }
                     >
                       {user?.role}
                     </Badge>
@@ -117,4 +124,4 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
       </DialogContent>
     </Dialog>
   );
-} 
+}

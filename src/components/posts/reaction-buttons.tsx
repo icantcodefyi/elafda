@@ -9,7 +9,7 @@ import {
 } from "~/types/reactions";
 import { useAuth } from "~/hooks/use-auth";
 import { Loader2 } from "lucide-react";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface ReactionButtonsProps {
   postId: string;
@@ -28,29 +28,35 @@ const REACTION_TYPES: ReactionType[] = [
 const REACTION_COLORS = {
   LIKE: {
     active: "text-blue-500 dark:text-blue-400",
-    hover: "hover:text-blue-500 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-950/50",
+    hover:
+      "hover:text-blue-500 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-950/50",
   },
   FIRE: {
     active: "text-orange-500 dark:text-orange-400",
-    hover: "hover:text-orange-500 hover:bg-orange-50 dark:hover:text-orange-400 dark:hover:bg-orange-950/50",
+    hover:
+      "hover:text-orange-500 hover:bg-orange-50 dark:hover:text-orange-400 dark:hover:bg-orange-950/50",
   },
   HEART: {
     active: "text-red-500 dark:text-red-400",
-    hover: "hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-950/50",
+    hover:
+      "hover:text-red-500 hover:bg-red-50 dark:hover:text-red-400 dark:hover:bg-red-950/50",
   },
   CRY: {
     active: "text-yellow-500 dark:text-yellow-400",
-    hover: "hover:text-yellow-500 hover:bg-yellow-50 dark:hover:text-yellow-400 dark:hover:bg-yellow-950/50",
+    hover:
+      "hover:text-yellow-500 hover:bg-yellow-50 dark:hover:text-yellow-400 dark:hover:bg-yellow-950/50",
   },
   DISLIKE: {
     active: "text-gray-600 dark:text-gray-400",
-    hover: "hover:text-gray-600 hover:bg-gray-50 dark:hover:text-gray-400 dark:hover:bg-gray-800/50",
+    hover:
+      "hover:text-gray-600 hover:bg-gray-50 dark:hover:text-gray-400 dark:hover:bg-gray-800/50",
   },
 } as const;
 
 export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
   const { user } = useAuth();
-  const { reactions, loading, toggleReaction, isToggling } = useReactionsQuery(postId);
+  const { reactions, loading, toggleReaction, isToggling } =
+    useReactionsQuery(postId);
 
   const handleReactionClick = async (type: ReactionType) => {
     if (!user) {
@@ -64,7 +70,7 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
   if (loading) {
     return (
       <div className={cn("flex items-center gap-2", className)}>
-        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+        <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
         <span className="text-muted-foreground text-sm">
           Loading reactions...
         </span>
@@ -88,29 +94,31 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
             disabled={!user || isToggling}
             className={cn(
               "group flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm transition-all duration-200",
-              "border border-transparent cursor-pointer",
+              "cursor-pointer border border-transparent",
               (!user || isToggling) && "cursor-not-allowed opacity-50",
               isActive
                 ? colors.active
                 : `text-muted-foreground ${colors.hover}`,
-              "disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+              "disabled:hover:text-muted-foreground disabled:hover:bg-transparent",
             )}
             title={user ? `${label} this post` : "Sign in to react"}
           >
-            <FontAwesomeIcon 
-              icon={icon} 
+            <FontAwesomeIcon
+              icon={icon}
               className={cn(
                 "h-4 w-4 transition-transform duration-200",
                 "group-hover:scale-110",
                 isActive && "scale-110",
-                isToggling && "animate-pulse"
-              )} 
+                isToggling && "animate-pulse",
+              )}
             />
             {count > 0 && (
-              <span className={cn(
-                "text-sm font-medium tabular-nums",
-                isActive ? colors.active : "text-muted-foreground"
-              )}>
+              <span
+                className={cn(
+                  "text-sm font-medium tabular-nums",
+                  isActive ? colors.active : "text-muted-foreground",
+                )}
+              >
                 {count}
               </span>
             )}

@@ -27,10 +27,11 @@ interface PostsResponse {
 
 // Query key factory
 const postKeys = {
-  all: ['posts'] as const,
-  lists: () => [...postKeys.all, 'list'] as const,
-  list: (filters: Record<string, unknown>) => [...postKeys.lists(), filters] as const,
-  details: () => [...postKeys.all, 'detail'] as const,
+  all: ["posts"] as const,
+  lists: () => [...postKeys.all, "list"] as const,
+  list: (filters: Record<string, unknown>) =>
+    [...postKeys.lists(), filters] as const,
+  details: () => [...postKeys.all, "detail"] as const,
   detail: (id: string) => [...postKeys.details(), id] as const,
 };
 
@@ -40,10 +41,10 @@ async function fetchPosts(page = 1, limit = 20): Promise<PostsResponse> {
     page: page.toString(),
     limit: limit.toString(),
   });
-  
+
   const response = await fetch(`/api/posts?${params.toString()}`);
   if (!response.ok) {
-    throw new Error('Failed to fetch posts');
+    throw new Error("Failed to fetch posts");
   }
   return response.json() as Promise<PostsResponse>;
 }
@@ -51,17 +52,17 @@ async function fetchPosts(page = 1, limit = 20): Promise<PostsResponse> {
 async function fetchPost(id: string): Promise<Post> {
   const response = await fetch(`/api/posts/${id}`);
   if (!response.ok) {
-    throw new Error('Failed to fetch post');
+    throw new Error("Failed to fetch post");
   }
   return response.json() as Promise<Post>;
 }
 
 async function incrementPostViews(postId: string): Promise<void> {
   const response = await fetch(`/api/posts/${postId}/views`, {
-    method: 'POST',
+    method: "POST",
   });
   if (!response.ok) {
-    throw new Error('Failed to increment views');
+    throw new Error("Failed to increment views");
   }
 }
 
@@ -104,13 +105,13 @@ export function useIncrementPostViews() {
             return {
               ...old,
               posts: old.posts.map((post) =>
-                post.id === postId ? { ...post, views: post.views + 1 } : post
+                post.id === postId ? { ...post, views: post.views + 1 } : post,
               ),
             };
           }
           return old;
-        }
+        },
       );
     },
   });
-} 
+}

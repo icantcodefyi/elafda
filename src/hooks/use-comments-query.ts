@@ -1,10 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { type Comment, type CreateCommentData, type VoteType } from "~/types/comments";
+import {
+  type Comment,
+  type CreateCommentData,
+  type VoteType,
+} from "~/types/comments";
 
 // Query key factory
 const commentKeys = {
-  all: ['comments'] as const,
-  post: (postId: string) => [...commentKeys.all, 'post', postId] as const,
+  all: ["comments"] as const,
+  post: (postId: string) => [...commentKeys.all, "post", postId] as const,
 };
 
 // API functions
@@ -13,8 +17,8 @@ async function fetchComments(postId: string): Promise<Comment[]> {
   if (!response.ok) {
     throw new Error("Failed to fetch comments");
   }
-  
-  const data = await response.json() as Comment[];
+
+  const data = (await response.json()) as Comment[];
 
   // Organize comments into nested structure
   const commentsMap = new Map<string, Comment>();
@@ -58,7 +62,13 @@ async function createComment(data: CreateCommentData): Promise<Comment> {
   return response.json() as Promise<Comment>;
 }
 
-async function voteComment({ commentId, type }: { commentId: string; type: VoteType }): Promise<void> {
+async function voteComment({
+  commentId,
+  type,
+}: {
+  commentId: string;
+  type: VoteType;
+}): Promise<void> {
   const response = await fetch("/api/comments/vote", {
     method: "POST",
     headers: {
@@ -98,7 +108,9 @@ export function useCreateComment(postId: string) {
     mutationFn: createComment,
     onSuccess: () => {
       // Invalidate and refetch comments
-      void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
+      void queryClient.invalidateQueries({
+        queryKey: commentKeys.post(postId),
+      });
     },
   });
 }
@@ -110,7 +122,9 @@ export function useVoteComment(postId: string) {
     mutationFn: voteComment,
     onSuccess: () => {
       // Invalidate and refetch comments to get updated vote counts
-      void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
+      void queryClient.invalidateQueries({
+        queryKey: commentKeys.post(postId),
+      });
     },
   });
 }
@@ -122,7 +136,9 @@ export function useDeleteComment(postId: string) {
     mutationFn: deleteComment,
     onSuccess: () => {
       // Invalidate and refetch comments
-      void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
+      void queryClient.invalidateQueries({
+        queryKey: commentKeys.post(postId),
+      });
     },
   });
-} 
+}

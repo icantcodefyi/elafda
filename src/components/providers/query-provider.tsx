@@ -20,7 +20,7 @@ export function QueryProvider({ children }: QueryProviderProps) {
             gcTime: 10 * 60 * 1000, // 10 minutes (formerly cacheTime)
             retry: (failureCount, error) => {
               // Don't retry on 4xx errors
-              if (error instanceof Error && 'status' in error) {
+              if (error instanceof Error && "status" in error) {
                 const status = (error as { status: number }).status;
                 if (status >= 400 && status < 500) {
                   return false;
@@ -34,7 +34,7 @@ export function QueryProvider({ children }: QueryProviderProps) {
             retry: 1,
           },
         },
-      })
+      }),
   );
 
   return (
@@ -43,4 +43,4 @@ export function QueryProvider({ children }: QueryProviderProps) {
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
-} 
+}

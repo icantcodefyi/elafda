@@ -17,7 +17,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 interface PostPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 async function getPost(id: string) {
@@ -62,7 +62,7 @@ async function getPost(id: string) {
 
 export default async function PostPage({ params }: PostPageProps) {
   try {
-    const { id } = await params;
+    const { id } = params;
 
     // Validate the ID parameter
     if (!id || typeof id !== "string" || id.trim() === "") {

@@ -1,17 +1,11 @@
 "use client"; // Error boundaries must be Client Components
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 
-export default function GlobalError({
-  error,
-  reset,
-}: {
-  error: Error & { digest?: string };
-  reset: () => void;
-}) {
+export default function GlobalError({ error }: { error: Error }) {
   useEffect(() => {
-    // Log the error to an error reporting service
-    console.error("Global error:", error);
+    Sentry.captureException(error);
   }, [error]);
 
   return (
@@ -32,12 +26,6 @@ export default function GlobalError({
 
             <div className="space-y-3">
               <button
-                onClick={reset}
-                className="bg-primary text-primary-foreground hover:bg-primary/90 w-full rounded-md px-4 py-2 transition-colors"
-              >
-                Try again
-              </button>
-              <button
                 onClick={() => (window.location.href = "/")}
                 className="border-border hover:bg-muted w-full rounded-md border px-4 py-2 transition-colors"
               >
@@ -45,19 +33,14 @@ export default function GlobalError({
               </button>
             </div>
 
-            {process.env.NODE_ENV === "development" && error.message && (
+            {process.env.NODE_ENV === "development" && error && (
               <details className="mt-4 text-left">
                 <summary className="cursor-pointer text-sm font-medium">
                   Error Details (Development Only)
                 </summary>
                 <pre className="text-muted-foreground bg-muted mt-2 overflow-auto rounded p-2 text-xs">
-                  {error.message}
+                  {JSON.stringify(error)}
                 </pre>
-                {error.digest && (
-                  <p className="text-muted-foreground mt-2 text-xs">
-                    Error ID: {error.digest}
-                  </p>
-                )}
               </details>
             )}
           </div>

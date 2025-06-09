@@ -54,6 +54,7 @@
     "@radix-ui/react-toggle": "^1.1.9",
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
+    "@sentry/nextjs": "^9.27.0",
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.80.6",
     "@tanstack/react-query-devtools": "^5.80.6",
@@ -109,5 +110,6 @@
   },
   "ct3aMetadata": {
     "initVersion": "7.39.3"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }

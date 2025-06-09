@@ -9,7 +9,7 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { ReactNodeViewRenderer } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
-import { Tweet } from "react-tweet";
+import { ClientTweetCard } from "~/components/tweet/client-tweet";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -239,8 +239,8 @@ const TweetEmbedComponent = ({
                 </Button>
               </div>
             ) : (
-              <div className="w-full [&_.react-tweet-theme]:bg-background [&_.react-tweet-theme]:border-border">
-                <Tweet id={tweetId} />
+              <div className="w-full">
+                <ClientTweetCard id={tweetId} className="shadow-2xl" />
               </div>
             )}
           </div>

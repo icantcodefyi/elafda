@@ -27,10 +27,11 @@ async function getPost(id: string) {
   return post;
 }
 
-export async function GET(
-  _req: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export default async function Image({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const post = await getPost(id);
 

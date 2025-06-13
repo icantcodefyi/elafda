@@ -45,6 +45,7 @@ export async function GET(req: NextRequest) {
         select: {
           id: true,
           title: true,
+          slug: true,
           tags: true,
           views: true,
           isDeleted: true,

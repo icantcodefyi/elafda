@@ -11,20 +11,6 @@ import { formatDistanceToNow } from "date-fns";
 import { usePostsQuery } from "~/hooks/use-posts-query";
 import { Button } from "~/components/ui/button";
 
-interface Post {
-  id: string;
-  title: string;
-  description: any;
-  tags: string[];
-  views: number;
-  createdAt: string;
-  author: {
-    id: string;
-    name: string | null;
-    image: string | null;
-  };
-}
-
 export function PostsList() {
   const { data, isLoading, error, refetch } = usePostsQuery();
 
@@ -76,7 +62,7 @@ export function PostsList() {
               <div className="flex-1">
                 <CardTitle className="line-clamp-2">
                   <Link
-                    href={`/e-lafda/${post.id}`}
+                    href={`/e-lafda/${post.slug}`}
                     className="hover:text-primary transition-colors"
                   >
                     {post.title}

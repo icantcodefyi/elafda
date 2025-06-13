@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 interface Post {
   id: string;
   title: string;
+  slug: string;
   description: unknown;
   tags: string[];
   views: number;
@@ -32,7 +33,7 @@ const postKeys = {
   list: (filters: Record<string, unknown>) =>
     [...postKeys.lists(), filters] as const,
   details: () => [...postKeys.all, "detail"] as const,
-  detail: (id: string) => [...postKeys.details(), id] as const,
+  detail: (slug: string) => [...postKeys.details(), slug] as const,
 };
 
 // API functions
@@ -49,8 +50,8 @@ async function fetchPosts(page = 1, limit = 20): Promise<PostsResponse> {
   return response.json() as Promise<PostsResponse>;
 }
 
-async function fetchPost(id: string): Promise<Post> {
-  const response = await fetch(`/api/posts/${id}`);
+async function fetchPost(slug: string): Promise<Post> {
+  const response = await fetch(`/api/posts/${slug}`);
   if (!response.ok) {
     throw new Error("Failed to fetch post");
   }
@@ -75,10 +76,10 @@ export function usePostsQuery(page = 1, limit = 20) {
   });
 }
 
-export function usePostQuery(id: string) {
+export function usePostQuery(slug: string) {
   return useQuery({
-    queryKey: postKeys.detail(id),
-    queryFn: () => fetchPost(id),
+    queryKey: postKeys.detail(slug),
+    queryFn: () => fetchPost(slug),
     staleTime: 10 * 60 * 1000, // 10 minutes
   });
 }

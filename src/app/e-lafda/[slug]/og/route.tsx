@@ -12,13 +12,13 @@ const fontSemiBold = readFileSync(
 const fontBold = readFileSync("./src/app/e-lafda/[slug]/fonts/Inter-Bold.ttf");
 
 interface RouteParams {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
-async function getPost(id: string) {
+async function getPost(slug: string) {
   const post = await db.post.findFirst({
     where: {
-      id,
+      slug,
       isDeleted: false, // Only show non-deleted posts
     },
     include: {
@@ -37,9 +37,9 @@ async function getPost(id: string) {
 
 // Handle OG Image generation
 export async function GET(req: NextRequest, { params }: RouteParams) {
-  const { id } = await params;
+  const { slug } = await params;
   
-  const post = await getPost(id);
+  const post = await getPost(slug);
   if (!post) notFound();
 
   return generateOGImage({
@@ -68,19 +68,19 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
 }
 
 // Generate static params for static generation
-export async function generateStaticParams(): Promise<{ id: string }[]> {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const posts = await db.post.findMany({
       where: {
         isDeleted: false,
       },
       select: {
-        id: true,
+        slug: true,
       },
     });
 
     return posts.map((post) => ({
-      id: post.id,
+      slug: post.slug,
     }));
   } catch (error) {
     console.error("Error generating static params:", error);

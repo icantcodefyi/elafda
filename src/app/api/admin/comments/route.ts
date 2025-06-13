@@ -62,6 +62,7 @@ export async function GET(req: NextRequest) {
             select: {
               id: true,
               title: true,
+              slug: true,
             },
           },
           _count: {

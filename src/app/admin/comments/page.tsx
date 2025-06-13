@@ -49,6 +49,7 @@ interface Comment {
   post: {
     id: string;
     title: string;
+    slug: string;
   };
   _count: {
     replies: number;
@@ -297,7 +298,7 @@ export default function AdminCommentsPage() {
                         <p className="text-muted-foreground mb-1 text-sm">
                           Comment on:{" "}
                           <Link
-                            href={`/e-lafda/${comment.post.id}`}
+                            href={`/e-lafda/${comment.post.slug}`}
                             className="text-primary hover:underline"
                           >
                             {comment.post.title}

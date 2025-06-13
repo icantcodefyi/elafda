@@ -127,7 +127,7 @@ export default function CreatePostPage() {
       }
 
       const post = await response.json();
-      router.push(`/e-lafda/${post.id}`);
+      router.push(`/e-lafda/${post.slug}`);
     } catch (error) {
       console.error("Error creating post:", error);
       // You might want to show a toast notification here

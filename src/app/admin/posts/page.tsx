@@ -36,6 +36,7 @@ import Link from "next/link";
 interface Post {
   id: string;
   title: string;
+  slug: string;
   tags: string[];
   views: number;
   isDeleted: boolean;
@@ -267,7 +268,7 @@ export default function AdminPostsPage() {
                     <div className="flex-1">
                       <div className="mb-2 flex items-center gap-2">
                         <Link
-                          href={`/e-lafda/${post.id}`}
+                          href={`/e-lafda/${post.slug}`}
                           className="font-medium hover:underline"
                         >
                           {post.title}

@@ -27,11 +27,10 @@ async function getPost(id: string) {
   return post;
 }
 
-export default async function Image({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export async function GET(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
   const { id } = await params;
   const post = await getPost(id);
 
@@ -65,18 +64,9 @@ export default async function Image({
   });
 }
 
-export const alt = "E-Lafda Post";
-export const size = {
-  width: 1200,
-  height: 630,
-};
-export const contentType = "image/png";
-
-export async function generateStaticParams(): Promise<
-  {
-    id: string;
-  }[]
-> {
+export async function generateStaticParams(): Promise<{
+  id: string;
+}[]> {
   const posts = await db.post.findMany({
     where: {
       isDeleted: false,

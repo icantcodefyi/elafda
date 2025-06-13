@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { ReactionButtons } from "~/components/posts/reaction-buttons";
-import { Eye, Loader2, AlertTriangle } from "lucide-react";
+import { Eye, Loader, AlertTriangle } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { usePostsQuery } from "~/hooks/use-posts-query";
 import { Button } from "~/components/ui/button";
@@ -32,7 +32,7 @@ export function PostsList() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
-          <Loader2 className="text-muted-foreground mx-auto h-8 w-8 animate-spin" />
+          <Loader className="text-muted-foreground mx-auto h-8 w-8 animate-spin" />
           <p className="text-muted-foreground mt-2 text-sm">Loading posts...</p>
         </div>
       </div>

@@ -48,7 +48,7 @@ export function CommentForm({
   };
 
   return (
-    <Card className="border-0 shadow-none">
+    <Card className="border-0 shadow-none py-0">
       <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
           value={content}

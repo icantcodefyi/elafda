@@ -44,7 +44,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   }, 0);
 
   return (
-    <Card>
+    <Card className="pb-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <MessageSquare className="h-5 w-5" />

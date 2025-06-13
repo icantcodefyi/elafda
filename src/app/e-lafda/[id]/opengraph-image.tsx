@@ -2,11 +2,10 @@ import { readFileSync } from "node:fs";
 import { generateOGImage } from "./og";
 import { db } from "~/server/db";
 import { notFound } from "next/navigation";
-import { ImageResponse } from "next/og";
 
-const font = readFileSync("public/fonts/Inter-Regular.ttf");
-const fontSemiBold = readFileSync("public/fonts/Inter-SemiBold.ttf");
-const fontBold = readFileSync("public/fonts/Inter-Bold.ttf");
+const font = readFileSync("./src/app/e-lafda/[id]/fonts/Inter-Regular.ttf");
+const fontSemiBold = readFileSync("./src/app/e-lafda/[id]/fonts/Inter-SemiBold.ttf");
+const fontBold = readFileSync("./src/app/e-lafda/[id]/fonts/Inter-Bold.ttf");
 
 async function getPost(id: string) {
   const post = await db.post.findFirst({

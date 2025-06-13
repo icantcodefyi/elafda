@@ -8,7 +8,6 @@ import {
   type ReactionType,
 } from "~/types/reactions";
 import { useAuth } from "~/hooks/use-auth";
-import { Loader2 } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface ReactionButtonsProps {
@@ -55,8 +54,7 @@ const REACTION_COLORS = {
 
 export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
   const { user } = useAuth();
-  const { reactions, loading, toggleReaction, isToggling } =
-    useReactionsQuery(postId);
+  const { reactions, toggleReaction, isToggling } = useReactionsQuery(postId);
 
   const handleReactionClick = async (type: ReactionType) => {
     if (!user) {
@@ -66,17 +64,6 @@ export function ReactionButtons({ postId, className }: ReactionButtonsProps) {
 
     toggleReaction(type);
   };
-
-  if (loading) {
-    return (
-      <div className={cn("flex items-center gap-2", className)}>
-        <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />
-        <span className="text-muted-foreground text-sm">
-          Loading reactions...
-        </span>
-      </div>
-    );
-  }
 
   return (
     <div className={cn("flex items-center gap-1", className)}>

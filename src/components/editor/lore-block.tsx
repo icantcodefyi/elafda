@@ -10,7 +10,7 @@ import { NodeViewWrapper, NodeViewContent } from "@tiptap/react";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
-import { BookOpen, X, Info } from "lucide-react";
+import { X, Info } from "lucide-react";
 import { useState } from "react";
 
 const LoreBlockComponent = ({
@@ -18,8 +18,12 @@ const LoreBlockComponent = ({
   updateAttributes,
   selected,
   deleteNode,
+  editor,
 }: any) => {
   const [isHovered, setIsHovered] = useState(false);
+
+  // Check if editor is editable
+  const isEditable = editor?.isEditable ?? true;
 
   return (
     <NodeViewWrapper className="lore-block">
@@ -34,19 +38,21 @@ const LoreBlockComponent = ({
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Remove button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => deleteNode()}
-          className={cn(
-            "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
-            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-            "hover:bg-destructive/10 hover:text-destructive",
-          )}
-        >
-          <X className="h-3 w-3" />
-        </Button>
+        {/* Remove button - only show in editable mode */}
+        {isEditable && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => deleteNode()}
+            className={cn(
+              "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
+              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+              "hover:bg-destructive/10 hover:text-destructive",
+            )}
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
 
         <div className="relative p-4">
           {/* Header */}

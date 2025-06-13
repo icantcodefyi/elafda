@@ -39,6 +39,7 @@ const TweetEmbedComponent = ({
   updateAttributes,
   deleteNode,
   selected,
+  editor,
 }: any) => {
   const [isDialogOpen, setIsDialogOpen] = useState(
     !node.attrs.url || !node.attrs.tweetId,
@@ -46,6 +47,9 @@ const TweetEmbedComponent = ({
   const [inputUrl, setInputUrl] = useState(node.attrs.url ?? "");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Check if editor is editable
+  const isEditable = editor?.isEditable ?? true;
 
   const extractTweetId = (url: string): string | null => {
     if (!url) return null;
@@ -88,11 +92,11 @@ const TweetEmbedComponent = ({
   };
 
   useEffect(() => {
-    // Auto-open dialog if no URL is set
-    if (!node.attrs.url) {
+    // Auto-open dialog if no URL is set and editor is editable
+    if (!node.attrs.url && isEditable) {
       setIsDialogOpen(true);
     }
-  }, [node.attrs.url]);
+  }, [node.attrs.url, isEditable]);
 
   const tweetId =
     (node.attrs.tweetId as string | undefined) ??
@@ -111,19 +115,21 @@ const TweetEmbedComponent = ({
           selected && "ring-ring ring-2 ring-offset-2",
         )}
       >
-        {/* Remove button */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => deleteNode()}
-          className={cn(
-            "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
-            "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
-            "hover:bg-destructive/10 hover:text-destructive",
-          )}
-        >
-          <X className="h-3 w-3" />
-        </Button>
+        {/* Remove button - only show in editable mode */}
+        {isEditable && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => deleteNode()}
+            className={cn(
+              "absolute top-2 right-2 z-10 h-6 w-6 rounded-md p-0",
+              "opacity-0 transition-opacity duration-200 group-hover:opacity-100",
+              "hover:bg-destructive/10 hover:text-destructive",
+            )}
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
 
         <div className="relative p-4">
           {/* Header */}
@@ -150,72 +156,75 @@ const TweetEmbedComponent = ({
               )}
             </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-7 px-3 text-xs"
-                  onClick={() => setInputUrl(node.attrs.url ?? "")}
-                >
-                  <Edit className="mr-1 h-3 w-3" />
-                  {hasValidTweet ? "Edit" : "Add URL"}
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    <Twitter className="h-5 w-5" />
-                    Embed Tweet
-                  </DialogTitle>
-                  <DialogDescription>
-                    Enter a Twitter/X tweet URL to embed it in your content.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-                  <div className="space-y-2">
-                    <Input
-                      id="tweetUrl"
-                      value={inputUrl}
-                      onChange={(e) => {
-                        setInputUrl(e.target.value);
-                        setError(null);
-                      }}
-                      placeholder="https://twitter.com/username/status/123456789"
-                      className={cn(
-                        "w-full",
-                        error && "border-destructive focus:border-destructive",
+            {/* Edit button - only show in editable mode */}
+            {isEditable && (
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-3 text-xs"
+                    onClick={() => setInputUrl(node.attrs.url ?? "")}
+                  >
+                    <Edit className="mr-1 h-3 w-3" />
+                    {hasValidTweet ? "Edit" : "Add URL"}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2">
+                      <Twitter className="h-5 w-5" />
+                      Embed Tweet
+                    </DialogTitle>
+                    <DialogDescription>
+                      Enter a Twitter/X tweet URL to embed it in your content.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <Input
+                        id="tweetUrl"
+                        value={inputUrl}
+                        onChange={(e) => {
+                          setInputUrl(e.target.value);
+                          setError(null);
+                        }}
+                        placeholder="https://twitter.com/username/status/123456789"
+                        className={cn(
+                          "w-full",
+                          error && "border-destructive focus:border-destructive",
+                        )}
+                      />
+                      {error && (
+                        <div className="text-destructive flex items-center gap-2 text-sm">
+                          <AlertCircle className="h-4 w-4" />
+                          {error}
+                        </div>
                       )}
-                    />
-                    {error && (
-                      <div className="text-destructive flex items-center gap-2 text-sm">
-                        <AlertCircle className="h-4 w-4" />
-                        {error}
-                      </div>
-                    )}
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={isLoading}>
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Loading...
-                        </>
-                      ) : (
-                        "Embed Tweet"
-                      )}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
+                    </div>
+                    <DialogFooter>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setIsDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" disabled={isLoading}>
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Loading...
+                          </>
+                        ) : (
+                          "Embed Tweet"
+                        )}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
 
           {/* Content */}
@@ -227,16 +236,21 @@ const TweetEmbedComponent = ({
                   No Tweet URL Set
                 </h3>
                 <p className="text-muted-foreground mb-4 max-w-sm text-xs">
-                  Click &quot;Add URL&quot; to embed a tweet from Twitter/X
+                  {isEditable 
+                    ? 'Click "Add URL" to embed a tweet from Twitter/X'
+                    : 'This tweet embed is not configured properly'
+                  }
                 </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsDialogOpen(true)}
-                  className="text-xs"
-                >
-                  Add Tweet URL
-                </Button>
+                {isEditable && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setIsDialogOpen(true)}
+                    className="text-xs"
+                  >
+                    Add Tweet URL
+                  </Button>
+                )}
               </div>
             ) : (
               <div className="w-full">

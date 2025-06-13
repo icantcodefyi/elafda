@@ -16,26 +16,8 @@ export function Footer() {
         rel="noopener noreferrer"
         className="hover:text-foreground transition-colors"
       >
-        by icantcodefyi
+        by icantcodefyi and ramx
       </a>
-      <a
-        href="https://x.com/ramxcodes/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-foreground transition-colors"
-      >
-        and ramx
-      </a>
-      <div className="text-muted-foreground py-2 text-sm underline">
-        <a
-          href="https://github.com/sponsors/icantcodefyi/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-foreground transition-colors"
-        >
-          donate us
-        </a>
-      </div>
     </div>
   );
 }

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "~/server/db";
 import { auth } from "~/server/auth";
+import { generateSlug, generateUniqueSlug } from "~/lib/slug";
 
 const createPostSchema = z.object({
   title: z.string().min(1, "Title is required").max(200, "Title too long"),
@@ -27,9 +28,28 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as unknown;
     const validatedData = createPostSchema.parse(body);
 
+    // Generate slug from title
+    const baseSlug = generateSlug(validatedData.title);
+    
+    // Check for existing slugs to ensure uniqueness
+    const existingPosts = await db.post.findMany({
+      where: {
+        slug: {
+          startsWith: baseSlug,
+        },
+      },
+      select: {
+        slug: true,
+      },
+    });
+    
+    const existingSlugs = existingPosts.map(post => post.slug);
+    const uniqueSlug = generateUniqueSlug(baseSlug, existingSlugs);
+
     const post = await db.post.create({
       data: {
         title: validatedData.title,
+        slug: uniqueSlug,
         description: validatedData.description,
         lore: validatedData.lore,
         tweetLinks: validatedData.tweetLinks,

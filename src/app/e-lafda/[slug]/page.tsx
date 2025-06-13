@@ -19,13 +19,13 @@ import { siteConfig } from "~/site-config";
 import type { Metadata } from "next";
 
 interface PostPageProps {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }
 
-async function getPost(id: string) {
+async function getPost(slug: string) {
   const post = await db.post.findFirst({
     where: {
-      id,
+      slug,
       isDeleted: false, // Only show non-deleted posts
     },
     include: {
@@ -47,8 +47,8 @@ async function getPost(id: string) {
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
-  const { id } = await params;
-  const post = await getPost(id);
+  const { slug } = await params;
+  const post = await getPost(slug);
 
   if (!post) {
     return {
@@ -62,11 +62,11 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     openGraph: {
       title: post.title,
       description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
-      url: `${siteConfig.url}/e-lafda/${post.id}`,
+      url: `${siteConfig.url}/e-lafda/${post.slug}`,
       siteName: siteConfig.name,
       images: [
         {
-          url: `${siteConfig.url}/e-lafda/${post.id}/og`,
+          url: `${siteConfig.url}/e-lafda/${post.slug}/og`,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -78,21 +78,21 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
       card: "summary_large_image",
       title: post.title,
       description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
-      images: [`${siteConfig.url}/e-lafda/${post.id}/og`],
+      images: [`${siteConfig.url}/e-lafda/${post.slug}/og`],
     },
   };
 }
 
 export default async function PostPage({ params }: PostPageProps) {
   try {
-    const { id } = await params;
+    const { slug } = await params;
 
-    // Validate the ID parameter
-    if (!id || typeof id !== "string" || id.trim() === "") {
+    // Validate the slug parameter
+    if (!slug || typeof slug !== "string" || slug.trim() === "") {
       notFound();
     }
 
-    const post = await getPost(id);
+    const post = await getPost(slug);
 
     if (!post) {
       notFound();

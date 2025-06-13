@@ -17,6 +17,7 @@ datasource db {
 model Post {
     id          String   @id @default(cuid())
     title       String
+    slug        String   @unique // URL-friendly version of title
     description Json     // Tiptap JSON content
     lore        String?  // Highlighted lore block
     tweetLinks  String[] // Array of tweet/thread URLs
@@ -35,6 +36,7 @@ model Post {
     comments  Comment[]
 
     @@index([title])
+    @@index([slug])
     @@index([authorId])
     @@index([createdAt])
     @@index([isDeleted])

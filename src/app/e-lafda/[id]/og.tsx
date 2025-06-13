@@ -82,14 +82,6 @@ export function generate({
         <p
           style={{
             fontWeight: 600,
-            fontSize: "26px",
-          }}
-        >
-          {props.tag.replace(/-/g, " ")}
-        </p>
-        <p
-          style={{
-            fontWeight: 600,
             fontSize: "56px",
           }}
         >

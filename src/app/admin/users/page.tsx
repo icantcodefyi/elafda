@@ -21,7 +21,6 @@ import {
   UserX,
   Shield,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -150,6 +149,7 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     void fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, roleFilter]);
 
   const openRoleDialog = (user: User, newRole: "USER" | "ADMIN" | "BANNED") => {

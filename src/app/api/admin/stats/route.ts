@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 
@@ -24,11 +24,6 @@ export async function GET(req: NextRequest) {
       now.getFullYear(),
       now.getMonth(),
       now.getDate() - 7,
-    );
-    const startOfMonth = new Date(
-      now.getFullYear(),
-      now.getMonth() - 1,
-      now.getDate(),
     );
 
     // Get all stats in parallel

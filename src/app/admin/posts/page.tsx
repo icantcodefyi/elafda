@@ -186,6 +186,7 @@ export default function AdminPostsPage() {
 
   useEffect(() => {
     void fetchPosts();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, showDeleted]);
 
   const openDeleteDialog = (post: Post, type: "soft" | "hard") => {

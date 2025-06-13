@@ -192,6 +192,7 @@ export default function AdminCommentsPage() {
 
   useEffect(() => {
     void fetchComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, showDeleted]);
 
   const openDeleteDialog = (comment: Comment, type: "soft" | "hard") => {

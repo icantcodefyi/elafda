@@ -5,11 +5,11 @@ import { generateOGImage } from "../og";
 import { db } from "~/server/db";
 
 // Load fonts
-const font = readFileSync("./src/app/e-lafda/[id]/fonts/Inter-Regular.ttf");
+const font = readFileSync("./src/app/e-lafda/[slug]/fonts/Inter-Regular.ttf");
 const fontSemiBold = readFileSync(
-  "./src/app/e-lafda/[id]/fonts/Inter-SemiBold.ttf",
+  "./src/app/e-lafda/[slug]/fonts/Inter-SemiBold.ttf",
 );
-const fontBold = readFileSync("./src/app/e-lafda/[id]/fonts/Inter-Bold.ttf");
+const fontBold = readFileSync("./src/app/e-lafda/[slug]/fonts/Inter-Bold.ttf");
 
 interface RouteParams {
   params: Promise<{ id: string }>;

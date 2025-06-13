@@ -213,7 +213,7 @@ export const TweetMedia = ({ tweet }: { tweet: EnrichedTweet }) => {
         !tweet.photos &&
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         tweet?.card?.binding_values?.thumbnail_image_large?.image_value.url && (
           <img
             src={

@@ -15,33 +15,72 @@ import {
   faUser,
   faTag,
 } from "@fortawesome/free-solid-svg-icons";
+import { siteConfig } from "~/site-config";
+import type { Metadata } from "next";
 
 interface PostPageProps {
   params: Promise<{ id: string }>;
 }
 
 async function getPost(id: string) {
-    const post = await db.post.findFirst({
-      where: {
-        id,
-        isDeleted: false, // Only show non-deleted posts
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-          },
+  const post = await db.post.findFirst({
+    where: {
+      id,
+      isDeleted: false, // Only show non-deleted posts
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
         },
       },
-    });
+    },
+  });
 
-    if (!post) {
-      return null;
-    }
+  if (!post) {
+    return null;
+  }
 
-    return post;
+  return post;
+}
+
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const { id } = await params;
+  const post = await getPost(id);
+
+  if (!post) {
+    return {
+      title: "Post not found",
+    };
+  }
+
+  return {
+    title: `${post.title} | ${siteConfig.name}`,
+    description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
+    openGraph: {
+      title: post.title,
+      description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
+      url: `${siteConfig.url}/e-lafda/${post.id}`,
+      siteName: siteConfig.name,
+      images: [
+        {
+          url: `${siteConfig.url}/e-lafda/${post.id}/og`,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
+      images: [`${siteConfig.url}/e-lafda/${post.id}/og`],
+    },
+  };
 }
 
 export default async function PostPage({ params }: PostPageProps) {
@@ -159,4 +198,4 @@ export default async function PostPage({ params }: PostPageProps) {
     console.error("Error in PostPage:", error);
     throw error; // Re-throw to trigger error boundary
   }
-}
+} 

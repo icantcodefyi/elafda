@@ -91,7 +91,7 @@ export function CommentItem({
     <div
       className={cn("group", depth > 0 && "border-muted ml-6 border-l-2 pl-4")}
     >
-      <div className="flex gap-3">
+      <div className="flex gap-2">
         {/* Vote buttons */}
         <div className="flex flex-col items-center gap-1">
           <Button
@@ -100,7 +100,7 @@ export function CommentItem({
             onClick={() => handleVote("UPVOTE")}
             disabled={!user}
             className={cn(
-              "h-8 w-8 p-0",
+              "h-4 w-4 p-0",
               comment.userVote === "UPVOTE" &&
                 "text-green-600 hover:bg-green-100 dark:text-green-400",
             )}
@@ -124,7 +124,7 @@ export function CommentItem({
             onClick={() => handleVote("DOWNVOTE")}
             disabled={!user}
             className={cn(
-              "h-8 w-8 p-0",
+              "h-4 w-4 p-0",
               comment.userVote === "DOWNVOTE" &&
                 "text-red-600 hover:bg-red-100 dark:text-red-400",
             )}

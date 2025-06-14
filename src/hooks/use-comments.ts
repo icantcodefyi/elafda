@@ -54,7 +54,73 @@ export function useComments(postId: string) {
     }
   }, [postId]);
 
-  // Create a new comment
+  // Helper function to update a comment in the nested structure
+  const updateCommentInTree = useCallback((
+    commentList: Comment[],
+    commentId: string,
+    updateFn: (comment: Comment) => Comment
+  ): Comment[] => {
+    return commentList.map(comment => {
+      if (comment.id === commentId) {
+        return updateFn(comment);
+      }
+      if (comment.replies && comment.replies.length > 0) {
+        return {
+          ...comment,
+          replies: updateCommentInTree(comment.replies, commentId, updateFn)
+        };
+      }
+      return comment;
+    });
+  }, []);
+
+  // Helper function to add a comment to the tree
+  const addCommentToTree = useCallback((
+    commentList: Comment[],
+    newComment: Comment,
+    parentId?: string
+  ): Comment[] => {
+    if (!parentId) {
+      // Add as root comment
+      return [...commentList, newComment];
+    }
+
+    // Add as reply to parent
+    return commentList.map(comment => {
+      if (comment.id === parentId) {
+        return {
+          ...comment,
+          replies: [...(comment.replies ?? []), newComment],
+          replyCount: comment.replyCount + 1
+        };
+      }
+      if (comment.replies && comment.replies.length > 0) {
+        return {
+          ...comment,
+          replies: addCommentToTree(comment.replies, newComment, parentId)
+        };
+      }
+      return comment;
+    });
+  }, []);
+
+  // Helper function to remove a comment from the tree
+  const removeCommentFromTree = useCallback((
+    commentList: Comment[],
+    commentId: string
+  ): Comment[] => {
+    return commentList.filter(comment => {
+      if (comment.id === commentId) {
+        return false;
+      }
+      if (comment.replies && comment.replies.length > 0) {
+        comment.replies = removeCommentFromTree(comment.replies, commentId);
+      }
+      return true;
+    });
+  }, []);
+
+  // Create a new comment with optimistic update
   const createComment = useCallback(
     async (data: CreateCommentData) => {
       try {
@@ -74,49 +140,56 @@ export function useComments(postId: string) {
 
         const newComment = (await response.json()) as Comment;
 
-        // Refetch to get updated structure
-        await fetchComments();
+        // Optimistically add the comment to the tree
+        setComments(prevComments => 
+          addCommentToTree(prevComments, newComment, data.parentId)
+        );
 
         return newComment;
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
+        // On error, refetch to get the correct state
+        await fetchComments();
         throw err;
       }
     },
-    [fetchComments],
+    [addCommentToTree, fetchComments],
   );
 
-  // Delete a comment
+  // Delete a comment with optimistic update
   const deleteComment = useCallback(
     async (commentId: string) => {
       try {
         setError(null);
+
+        // Optimistically remove the comment
+        const previousComments = comments;
+        setComments(prevComments => removeCommentFromTree(prevComments, commentId));
 
         const response = await fetch(`/api/comments/${commentId}`, {
           method: "DELETE",
         });
 
         if (!response.ok) {
+          // Revert optimistic update on error
+          setComments(previousComments);
           throw new Error("Failed to delete comment");
         }
-
-        // Refetch to get updated structure
-        await fetchComments();
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
         throw err;
       }
     },
-    [fetchComments],
+    [comments, removeCommentFromTree],
   );
 
-  // Vote on a comment
+  // Vote on a comment with optimistic update
   const toggleVote = useCallback(
     async (commentId: string, type: VoteType) => {
       try {
         setError(null);
 
-        // Find current vote status
+        // Find current comment to get current vote status
         const findComment = (commentList: Comment[]): Comment | null => {
           for (const comment of commentList) {
             if (comment.id === commentId) return comment;
@@ -131,7 +204,50 @@ export function useComments(postId: string) {
         const comment = findComment(comments);
         if (!comment) return;
 
-        if (comment.userVote === type) {
+        const currentVote = comment.userVote;
+        const isRemovingVote = currentVote === type;
+        
+        // Optimistically update the vote
+        setComments(prevComments => 
+          updateCommentInTree(prevComments, commentId, (comment) => {
+            let newScore = comment.score;
+            let newUpvotes = comment.upvotes;
+            let newDownvotes = comment.downvotes;
+            let newUserVote: VoteType | null = null;
+
+            // Remove previous vote effect
+            if (currentVote === "UPVOTE") {
+              newScore--;
+              newUpvotes--;
+            } else if (currentVote === "DOWNVOTE") {
+              newScore++;
+              newDownvotes--;
+            }
+
+            // Apply new vote effect (if not removing)
+            if (!isRemovingVote) {
+              newUserVote = type;
+              if (type === "UPVOTE") {
+                newScore++;
+                newUpvotes++;
+              } else if (type === "DOWNVOTE") {
+                newScore--;
+                newDownvotes++;
+              }
+            }
+
+            return {
+              ...comment,
+              score: newScore,
+              upvotes: newUpvotes,
+              downvotes: newDownvotes,
+              userVote: newUserVote
+            };
+          })
+        );
+
+        // Make the API call
+        if (isRemovingVote) {
           // Remove vote
           const response = await fetch(
             `/api/comments/votes?commentId=${commentId}`,
@@ -149,14 +265,13 @@ export function useComments(postId: string) {
           });
           if (!response.ok) throw new Error("Failed to vote");
         }
-
-        // Refetch to get updated vote counts
-        await fetchComments();
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
+        // On error, refetch to get the correct state
+        await fetchComments();
       }
     },
-    [comments, fetchComments],
+    [comments, updateCommentInTree, fetchComments],
   );
 
   // Fetch comments on mount

@@ -3,7 +3,7 @@
 import { MessageSquare, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
-import { useComments } from "~/hooks/use-comments";
+import { useCommentsWithQuery } from "~/hooks/use-comments-query";
 import { useAuth } from "~/hooks/use-auth";
 import { CommentForm } from "./comment-form";
 import { CommentItem } from "./comment-item";
@@ -16,7 +16,7 @@ interface CommentsSectionProps {
 export function CommentsSection({ postId }: CommentsSectionProps) {
   const { user } = useAuth();
   const { comments, loading, error, createComment, deleteComment, toggleVote } =
-    useComments(postId);
+    useCommentsWithQuery(postId);
 
   const handleCreateComment = async (content: string) => {
     const data: CreateCommentData = {

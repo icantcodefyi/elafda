@@ -17,7 +17,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { SignInDialog } from "~/components/auth/sign-in-dialog";
 import { ProfileDialog } from "~/components/profile/profile-dialog";
-import { Plus, LogOut, User, Palette, Shield } from "lucide-react";
+import { Plus, LogOut, User, Palette, Shield, Github } from "lucide-react";
 import { useAuth } from "~/hooks/use-auth";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
@@ -83,6 +83,23 @@ export function Header() {
 
           {/* Right side actions */}
           <div className="flex items-center space-x-2">
+            {/* GitHub link */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 w-8"
+              asChild
+            >
+              <Link
+                href="https://github.com/icantcodefyi/elafda"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github className="h-4 w-4" />
+                <span className="sr-only">GitHub Repository</span>
+              </Link>
+            </Button>
+
             {isSignedIn ? (
               <>
                 <Button size="sm" className="hidden sm:flex" asChild>

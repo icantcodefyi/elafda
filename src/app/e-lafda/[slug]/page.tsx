@@ -44,16 +44,8 @@ async function getPost(slug: string) {
   if (!post) {
     return null;
   }
-
-  await db.post.update({
-    where: { id: post.id },
-    data: { views: { increment: 1 } },
-  });
-
-  return {
-    ...post,
-    views: post.views + 1,
-  };
+  
+  return post;
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {

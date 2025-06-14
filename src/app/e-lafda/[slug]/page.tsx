@@ -5,6 +5,8 @@ import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Separator } from "~/components/ui/separator";
 import { PostClientWrapper } from "~/components/posts/post-client-wrapper";
+import { EditPostButton } from "~/components/posts/edit-post-button";
+import { DeletePostButton } from "~/components/posts/delete-post-button";
 import { db } from "~/server/db";
 import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
@@ -176,15 +178,23 @@ export default async function PostPage({ params }: PostPageProps) {
                     </div>
                   </div>
 
-                  {/* View Count */}
-                  <div className="bg-muted/50 flex items-center gap-1.5 rounded-full px-3 py-1.5">
-                    <FontAwesomeIcon
-                      icon={faEye}
-                      className="text-muted-foreground h-3.5 w-3.5"
+                  {/* Actions and View Count */}
+                  <div className="flex items-center gap-3">
+                    <EditPostButton postSlug={post.slug} authorId={post.authorId} />
+                    <DeletePostButton 
+                      postSlug={post.slug} 
+                      postTitle={post.title} 
+                      authorId={post.authorId} 
                     />
-                    <span className="text-muted-foreground text-sm font-medium">
-                      {post.views.toLocaleString()}
-                    </span>
+                    <div className="bg-muted/50 flex items-center gap-1.5 rounded-full px-3 py-1.5">
+                      <FontAwesomeIcon
+                        icon={faEye}
+                        className="text-muted-foreground h-3.5 w-3.5"
+                      />
+                      <span className="text-muted-foreground text-sm font-medium">
+                        {post.views.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </CardHeader>

@@ -292,4 +292,4 @@ This project is part of the elafda application and follows the same licensing te
 
 ---
 
-Built with ❤️ using Next.js 15, React 19, and modern web technologies. 
+Built with ❤️ using Next.js 15, React 19, and modern web technologies. /

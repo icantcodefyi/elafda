@@ -7,7 +7,7 @@ import { ThemeProvider } from "~/components/theme-provider";
 import { SessionProviderWrapper } from "~/components/providers/session-provider";
 import { Header } from "~/components/header";
 import { Analytics } from "@vercel/analytics/next"
-// import { Footer } from "~/components/footer";
+import { Footer } from "~/components/footer";
 import { QueryProvider } from "~/components/providers/query-provider";
 
 export const metadata: Metadata = {
@@ -38,7 +38,7 @@ export default function RootLayout({
                 <Header />
                 <main className="flex-1">{children}</main>
                 <Analytics />
-                {/* <Footer /> */}
+                <Footer />
               </div>
             </ThemeProvider>
           </QueryProvider>

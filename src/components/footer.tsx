@@ -8,15 +8,25 @@ const architectsDaughter = Architects_Daughter({
 export function Footer() {
   return (
     <div
-      className={`${architectsDaughter.className} text-muted-foreground flex w-full items-center justify-center gap-2 py-2 text-sm underline`}
+      className={`${architectsDaughter.className} text-muted-foreground flex w-full items-center justify-center gap-2 py-2 mb-5 text-sm`}
     >
+      by
       <a
         href="https://x.com/icantcodefyi/"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:text-foreground transition-colors"
       >
-        by icantcodefyi and ramx
+        icantcodefyi
+      </a>{" "}
+      and{" "}
+      <a
+        href="https://x.com/ramxcodes"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="hover:text-foreground transition-colors"
+      >
+        ramx
       </a>
     </div>
   );

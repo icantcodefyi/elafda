@@ -26,7 +26,7 @@ async function getPost(slug: string) {
   const post = await db.post.findFirst({
     where: {
       slug,
-      isDeleted: false, // Only show non-deleted posts
+      isDeleted: false,
     },
     include: {
       author: {
@@ -43,7 +43,15 @@ async function getPost(slug: string) {
     return null;
   }
 
-  return post;
+  await db.post.update({
+    where: { id: post.id },
+    data: { views: { increment: 1 } },
+  });
+
+  return {
+    ...post,
+    views: post.views + 1,
+  };
 }
 
 export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {

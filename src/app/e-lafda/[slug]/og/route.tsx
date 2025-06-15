@@ -4,12 +4,12 @@ import { notFound } from "next/navigation";
 import { generateOGImage } from "../og";
 import { db } from "~/server/db";
 
-// Load fonts
-const font = readFileSync("./src/app/e-lafda/[slug]/fonts/Inter-Regular.ttf");
+
+const font = readFileSync("./public/fonts/Inter-Regular.ttf");
 const fontSemiBold = readFileSync(
-  "./src/app/e-lafda/[slug]/fonts/Inter-SemiBold.ttf",
+  "./public/fonts/Inter-SemiBold.ttf",
 );
-const fontBold = readFileSync("./src/app/e-lafda/[slug]/fonts/Inter-Bold.ttf");
+const fontBold = readFileSync("./public/fonts/Inter-Bold.ttf");
 
 interface RouteParams {
   params: Promise<{ slug: string }>;
@@ -19,7 +19,7 @@ async function getPost(slug: string) {
   const post = await db.post.findFirst({
     where: {
       slug,
-      isDeleted: false, // Only show non-deleted posts
+      isDeleted: false,
     },
     include: {
       author: {
@@ -35,7 +35,6 @@ async function getPost(slug: string) {
   return post;
 }
 
-// Handle OG Image generation
 export async function GET(req: NextRequest, { params }: RouteParams) {
   const { slug } = await params;
   
@@ -67,7 +66,6 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
   });
 }
 
-// Generate static params for static generation
 export async function generateStaticParams(): Promise<{ slug: string }[]> {
   try {
     const posts = await db.post.findMany({

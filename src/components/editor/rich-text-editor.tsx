@@ -125,23 +125,18 @@ export function RichTextEditor({
           "prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[400px] p-6",
       },
       handlePaste: (view, event, slice) => {
-        // Get the pasted content
         const text = event.clipboardData?.getData("text/plain") ?? "";
 
-        // Check if it's a Twitter/X URL
         const twitterMatch = text.match(
           /(?:https?:\/\/)?(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/,
         );
 
         if (twitterMatch && twitterMatch[1]) {
-          // Prevent default paste behavior
           event.preventDefault();
 
-          // Insert tweet embed instead
           const tweetId = twitterMatch[1];
           const url = text.startsWith("http") ? text : `https://${text}`;
 
-          // Add a small delay to show the conversion happening
           setTimeout(() => {
             (editor?.chain().focus() as any)
               ?.setTweetEmbed({
@@ -151,19 +146,17 @@ export function RichTextEditor({
               .run();
           }, 100);
 
-          return true; // Handled
+          return true;
         }
 
-        return false; // Let default paste behavior handle it
+        return false;
       },
       handleKeyDown: (view, event) => {
-        // Handle Enter key after typing a Twitter/X URL
         if (event.key === "Enter") {
           const { state } = view;
           const { selection } = state;
           const { $from } = selection;
 
-          // Get the current paragraph text
           const paragraph = $from.parent;
           if (paragraph.type.name === "paragraph") {
             const text = paragraph.textContent;
@@ -172,14 +165,11 @@ export function RichTextEditor({
             );
 
             if (twitterMatch && twitterMatch[1]) {
-              // Prevent default Enter behavior
               event.preventDefault();
 
-              // Replace the paragraph with a tweet embed
               const tweetId = twitterMatch[1];
               const url = text.startsWith("http") ? text : `https://${text}`;
 
-              // Delete the current paragraph and insert tweet embed
               const tr = state.tr;
               tr.delete($from.start() - 1, $from.end());
 
@@ -191,16 +181,15 @@ export function RichTextEditor({
                   })
                   .run();
 
-                // Add a new paragraph after the embed
                 (editor?.chain() as any)?.insertContent("<p></p>").run();
               }, 100);
 
-              return true; // Handled
+              return true;
             }
           }
         }
 
-        return false; // Let default behavior handle it
+        return false;
       },
     },
   });
@@ -217,7 +206,6 @@ export function RichTextEditor({
     if (!url) return null;
 
     try {
-      // Handle both twitter.com and x.com URLs
       const twitterMatch = url.match(
         /(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/,
       );
@@ -241,7 +229,6 @@ export function RichTextEditor({
       return;
     }
 
-    // Add the tweet embed to the editor
     (editor.chain().focus() as any)
       .setTweetEmbed({
         url: tweetUrl.trim(),
@@ -249,7 +236,6 @@ export function RichTextEditor({
       })
       .run();
 
-    // Reset state and close dialog
     setTweetUrl("");
     setTweetError(null);
     setIsTweetDialogOpen(false);
@@ -269,14 +255,12 @@ export function RichTextEditor({
   return (
     <TooltipProvider>
       <Card className={cn("w-full", className)}>
-        {/* Toolbar */}
         <div className="border-b p-4">
           <div className="flex flex-wrap items-center gap-2">
-            {/* Basic formatting */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={editor.isActive("bold") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBold().run()}
@@ -292,7 +276,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={editor.isActive("italic") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -307,11 +291,10 @@ export function RichTextEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Headings */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={
                     editor.isActive("heading", { level: 1 }) ? "default" : "ghost"
                   }
@@ -331,7 +314,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={
                     editor.isActive("heading", { level: 2 }) ? "default" : "ghost"
                   }
@@ -351,7 +334,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={
                     editor.isActive("heading", { level: 3 }) ? "default" : "ghost"
                   }
@@ -370,11 +353,10 @@ export function RichTextEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Lists */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={editor.isActive("bulletList") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -390,7 +372,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={editor.isActive("orderedList") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -406,7 +388,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant={editor.isActive("blockquote") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -421,11 +403,10 @@ export function RichTextEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Custom blocks */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={addLoreBlock}
@@ -446,7 +427,7 @@ export function RichTextEditor({
                 <TooltipTrigger asChild>
                   <DialogTrigger asChild>
                     <Button
-                      type="button" // Prevent form submission
+                      type="button"
                       variant="ghost"
                       size="sm"
                       onClick={() => {
@@ -511,7 +492,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={triggerFileInput}
@@ -535,11 +516,10 @@ export function RichTextEditor({
 
             <Separator orientation="vertical" className="h-6" />
 
-            {/* Undo/Redo */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => editor.chain().focus().undo().run()}
@@ -556,7 +536,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  type="button" // Prevent form submission
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => editor.chain().focus().redo().run()}
@@ -572,7 +552,6 @@ export function RichTextEditor({
           </div>
         </div>
 
-        {/* Editor */}
         <div className="min-h-[400px] px-6">
           <EditorContent editor={editor} />
         </div>

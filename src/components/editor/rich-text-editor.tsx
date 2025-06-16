@@ -126,72 +126,80 @@ export function RichTextEditor({
       },
       handlePaste: (view, event, slice) => {
         // Get the pasted content
-        const text = event.clipboardData?.getData('text/plain') ?? '';
-        
+        const text = event.clipboardData?.getData("text/plain") ?? "";
+
         // Check if it's a Twitter/X URL
-        const twitterMatch = text.match(/(?:https?:\/\/)?(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/);
-        
+        const twitterMatch = text.match(
+          /(?:https?:\/\/)?(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/,
+        );
+
         if (twitterMatch && twitterMatch[1]) {
           // Prevent default paste behavior
           event.preventDefault();
-          
+
           // Insert tweet embed instead
           const tweetId = twitterMatch[1];
-          const url = text.startsWith('http') ? text : `https://${text}`;
-          
+          const url = text.startsWith("http") ? text : `https://${text}`;
+
           // Add a small delay to show the conversion happening
           setTimeout(() => {
-            (editor?.chain().focus() as any)?.setTweetEmbed({
-              url: url.trim(),
-              tweetId,
-            }).run();
+            (editor?.chain().focus() as any)
+              ?.setTweetEmbed({
+                url: url.trim(),
+                tweetId,
+              })
+              .run();
           }, 100);
-          
+
           return true; // Handled
         }
-        
+
         return false; // Let default paste behavior handle it
       },
       handleKeyDown: (view, event) => {
         // Handle Enter key after typing a Twitter/X URL
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
           const { state } = view;
           const { selection } = state;
           const { $from } = selection;
-          
+
           // Get the current paragraph text
           const paragraph = $from.parent;
-          if (paragraph.type.name === 'paragraph') {
+          if (paragraph.type.name === "paragraph") {
             const text = paragraph.textContent;
-            const twitterMatch = text.match(/(?:https?:\/\/)?(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/);
-            
+            const twitterMatch = text.match(
+              /(?:https?:\/\/)?(?:twitter\.com|x\.com)\/.*\/status\/(\d+)/,
+            );
+
             if (twitterMatch && twitterMatch[1]) {
               // Prevent default Enter behavior
               event.preventDefault();
-              
+
               // Replace the paragraph with a tweet embed
               const tweetId = twitterMatch[1];
-              const url = text.startsWith('http') ? text : `https://${text}`;
-              
+              const url = text.startsWith("http") ? text : `https://${text}`;
+
               // Delete the current paragraph and insert tweet embed
               const tr = state.tr;
               tr.delete($from.start() - 1, $from.end());
-              
+
               setTimeout(() => {
-                (editor?.chain().focus() as any)?.setTweetEmbed({
-                  url: url.trim(),
-                  tweetId,
-                }).run();
-                
+                (editor?.chain().focus() as any)
+                  ?.setTweetEmbed({
+                    url: url.trim(),
+                    tweetId,
+                  })
+                  .run();
+
                 // Add a new paragraph after the embed
-                (editor?.chain() as any)?.insertContent('<p></p>').run();
+                (editor?.chain() as any)?.insertContent("<p></p>").run();
               }, 100);
-              
+
               return true; // Handled
             }
           }
         }
-        
+
         return false; // Let default behavior handle it
       },
     },
@@ -268,6 +276,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={editor.isActive("bold") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBold().run()}
@@ -283,6 +292,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={editor.isActive("italic") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -301,6 +311,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={
                     editor.isActive("heading", { level: 1 }) ? "default" : "ghost"
                   }
@@ -320,6 +331,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={
                     editor.isActive("heading", { level: 2 }) ? "default" : "ghost"
                   }
@@ -339,6 +351,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={
                     editor.isActive("heading", { level: 3 }) ? "default" : "ghost"
                   }
@@ -361,6 +374,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={editor.isActive("bulletList") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBulletList().run()}
@@ -376,6 +390,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={editor.isActive("orderedList") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleOrderedList().run()}
@@ -391,6 +406,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant={editor.isActive("blockquote") ? "default" : "ghost"}
                   size="sm"
                   onClick={() => editor.chain().focus().toggleBlockquote().run()}
@@ -409,6 +425,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant="ghost"
                   size="sm"
                   onClick={addLoreBlock}
@@ -417,7 +434,10 @@ export function RichTextEditor({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Lore Block - Add background information or context (Ctrl+Shift+L)</p>
+                <p>
+                  Lore Block - Add background information or context
+                  (Ctrl+Shift+L)
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -426,6 +446,7 @@ export function RichTextEditor({
                 <TooltipTrigger asChild>
                   <DialogTrigger asChild>
                     <Button
+                      type="button" // Prevent form submission
                       variant="ghost"
                       size="sm"
                       onClick={() => {
@@ -490,6 +511,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant="ghost"
                   size="sm"
                   onClick={triggerFileInput}
@@ -503,7 +525,11 @@ export function RichTextEditor({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>{isUploading ? "Uploading image..." : "Upload Image - Add images to your post"}</p>
+                <p>
+                  {isUploading
+                    ? "Uploading image..."
+                    : "Upload Image - Add images to your post"}
+                </p>
               </TooltipContent>
             </Tooltip>
 
@@ -513,6 +539,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant="ghost"
                   size="sm"
                   onClick={() => editor.chain().focus().undo().run()}
@@ -529,6 +556,7 @@ export function RichTextEditor({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
+                  type="button" // Prevent form submission
                   variant="ghost"
                   size="sm"
                   onClick={() => editor.chain().focus().redo().run()}

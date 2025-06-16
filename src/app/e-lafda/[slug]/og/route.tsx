@@ -1,15 +1,16 @@
 import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { type NextRequest } from "next/server";
 import { notFound } from "next/navigation";
 import { generateOGImage } from "../og";
 import { db } from "~/server/db";
 
 
-const font = readFileSync("./src/app/e-lafda/[slug]/og/fonts/Inter-Regular.ttf");
+const font = readFileSync(join(process.cwd(), "src/app/e-lafda/[slug]/og/fonts/Inter-Regular.ttf"));
 const fontSemiBold = readFileSync(
-  "./src/app/e-lafda/[slug]/og/fonts/Inter-Regular.ttf",
+  join(process.cwd(), "src/app/e-lafda/[slug]/og/fonts/Inter-SemiBold.ttf"),
 );
-const fontBold = readFileSync("./src/app/e-lafda/[slug]/og/fonts/Inter-Bold.ttf");
+const fontBold = readFileSync(join(process.cwd(), "src/app/e-lafda/[slug]/og/fonts/Inter-Bold.ttf"));
 
 interface RouteParams {
   params: Promise<{ slug: string }>;

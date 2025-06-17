@@ -15,7 +15,6 @@ export function useReactions(postId: string) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch reactions for the post
   const fetchReactions = useCallback(async () => {
     try {
       setLoading(true);
@@ -35,7 +34,6 @@ export function useReactions(postId: string) {
     }
   }, [postId]);
 
-  // Add or update a reaction
   const addReaction = useCallback(
     async (type: ReactionType) => {
       try {
@@ -53,11 +51,9 @@ export function useReactions(postId: string) {
           throw new Error("Failed to add reaction");
         }
 
-        // Optimistically update the UI
         setReactions((prev) => {
           const newCounts = { ...prev.counts };
 
-          // Remove previous reaction count if user had one
           if (prev.userReaction) {
             newCounts[prev.userReaction] = Math.max(
               0,
@@ -65,7 +61,6 @@ export function useReactions(postId: string) {
             );
           }
 
-          // Add new reaction count
           newCounts[type] = (newCounts[type] ?? 0) + 1;
 
           return {
@@ -75,14 +70,12 @@ export function useReactions(postId: string) {
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
-        // Revert optimistic update by refetching
         await fetchReactions();
       }
     },
     [postId, fetchReactions],
   );
 
-  // Remove a reaction
   const removeReaction = useCallback(async () => {
     try {
       setError(null);
@@ -95,7 +88,6 @@ export function useReactions(postId: string) {
         throw new Error("Failed to remove reaction");
       }
 
-      // Optimistically update the UI
       setReactions((prev) => {
         if (!prev.userReaction) return prev;
 
@@ -112,12 +104,10 @@ export function useReactions(postId: string) {
       });
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred");
-      // Revert optimistic update by refetching
       await fetchReactions();
     }
   }, [postId, fetchReactions]);
 
-  // Toggle reaction (add if not present, remove if same, change if different)
   const toggleReaction = useCallback(
     async (type: ReactionType) => {
       if (reactions.userReaction === type) {
@@ -129,7 +119,6 @@ export function useReactions(postId: string) {
     [reactions.userReaction, addReaction, removeReaction],
   );
 
-  // Fetch reactions on mount
   useEffect(() => {
     void fetchReactions();
   }, [fetchReactions]);

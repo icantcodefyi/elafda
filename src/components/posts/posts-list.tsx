@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { ReactionButtons } from "~/components/posts/reaction-buttons";
-import { Loader, AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
+import { PostsListSkeleton } from "~/components/posts/post-skeleton";
+import { AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { usePostsQuery } from "~/hooks/use-posts-query";
 import { Button } from "~/components/ui/button";
@@ -26,14 +27,7 @@ export function PostsList({ initialPage = 1 }: PostsListProps) {
   );
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <Loader className="text-muted-foreground mx-auto h-8 w-8 animate-spin" />
-          <p className="text-muted-foreground mt-2 text-sm">Loading posts...</p>
-        </div>
-      </div>
-    );
+    return <PostsListSkeleton count={postsPerPage} />;
   }
 
   if (error) {

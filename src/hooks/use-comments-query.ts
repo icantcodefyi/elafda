@@ -5,13 +5,11 @@ import {
   type VoteType,
 } from "~/types/comments";
 
-// Query key factory
 const commentKeys = {
   all: ["comments"] as const,
   post: (postId: string) => [...commentKeys.all, "post", postId] as const,
 };
 
-// Helper functions for optimistic updates
 function updateCommentInTree(
   commentList: Comment[],
   commentId: string,
@@ -37,11 +35,9 @@ function addCommentToTree(
   parentId?: string
 ): Comment[] {
   if (!parentId) {
-    // Add as root comment
     return [...commentList, newComment];
   }
 
-  // Add as reply to parent
   return commentList.map(comment => {
     if (comment.id === parentId) {
       return {
@@ -75,7 +71,6 @@ function removeCommentFromTree(
   });
 }
 
-// API functions
 async function fetchComments(postId: string): Promise<Comment[]> {
   const response = await fetch(`/api/comments?postId=${postId}`);
   if (!response.ok) {
@@ -84,16 +79,13 @@ async function fetchComments(postId: string): Promise<Comment[]> {
 
   const data = (await response.json()) as Comment[];
 
-  // Organize comments into nested structure
   const commentsMap = new Map<string, Comment>();
   const rootComments: Comment[] = [];
 
-  // First pass: create map of all comments
   data.forEach((comment) => {
     commentsMap.set(comment.id, { ...comment, replies: [] });
   });
 
-  // Second pass: organize into parent-child relationships
   data.forEach((comment) => {
     const commentWithReplies = commentsMap.get(comment.id)!;
 
@@ -138,7 +130,6 @@ async function voteComment({
   const isRemovingVote = currentVote === type;
   
   if (isRemovingVote) {
-    // Remove vote
     const response = await fetch(
       `/api/comments/votes?commentId=${commentId}`,
       {
@@ -147,7 +138,6 @@ async function voteComment({
     );
     if (!response.ok) throw new Error("Failed to remove vote");
   } else {
-    // Add/change vote
     const response = await fetch("/api/comments/votes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -167,12 +157,11 @@ async function deleteComment(commentId: string): Promise<void> {
   }
 }
 
-// Hooks
 export function useCommentsQuery(postId: string) {
   return useQuery({
     queryKey: commentKeys.post(postId),
     queryFn: () => fetchComments(postId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: 2 * 60 * 1000,
   });
 }
 
@@ -182,22 +171,18 @@ export function useCreateComment(postId: string) {
   return useMutation({
     mutationFn: createComment,
     onMutate: async (newCommentData) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: commentKeys.post(postId) });
 
-      // Snapshot the previous value
       const previousComments = queryClient.getQueryData<Comment[]>(commentKeys.post(postId));
 
-      // Optimistically update to the new value
       if (previousComments) {
-        // Create a temporary comment for optimistic update
         const tempComment: Comment = {
-          id: `temp-${Date.now()}`, // Temporary ID
+          id: `temp-${Date.now()}`,
           content: newCommentData.content,
           postId: newCommentData.postId,
           parentId: newCommentData.parentId ?? null,
           createdAt: new Date().toISOString(),
-          user: { id: "temp", name: "You", image: null }, // Will be replaced with real data
+          user: { id: "temp", name: "You", image: null },
           upvotes: 0,
           downvotes: 0,
           score: 0,
@@ -215,27 +200,22 @@ export function useCreateComment(postId: string) {
         queryClient.setQueryData(commentKeys.post(postId), optimisticComments);
       }
 
-      // Return a context object with the snapshotted value
       return { previousComments };
     },
     onSuccess: (newComment) => {
-      // Replace the temporary comment with the real one
       const currentComments = queryClient.getQueryData<Comment[]>(commentKeys.post(postId));
       if (currentComments) {
-        // Remove temp comment and add real comment
         const withoutTemp = currentComments.filter(c => !c.id.startsWith('temp-'));
                  const withRealComment = addCommentToTree(withoutTemp, newComment, newComment.parentId ?? undefined);
         queryClient.setQueryData(commentKeys.post(postId), withRealComment);
       }
     },
     onError: (err, newCommentData, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousComments) {
         queryClient.setQueryData(commentKeys.post(postId), context.previousComments);
       }
     },
     onSettled: () => {
-      // Always refetch after error or success to ensure we have the latest data
       void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
     },
   });
@@ -247,13 +227,10 @@ export function useVoteComment(postId: string) {
   return useMutation({
     mutationFn: voteComment,
     onMutate: async ({ commentId, type, currentVote }) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: commentKeys.post(postId) });
 
-      // Snapshot the previous value
       const previousComments = queryClient.getQueryData<Comment[]>(commentKeys.post(postId));
 
-      // Optimistically update to the new value
       if (previousComments) {
         const isRemovingVote = currentVote === type;
         
@@ -266,7 +243,6 @@ export function useVoteComment(postId: string) {
             let newDownvotes = comment.downvotes;
             let newUserVote: VoteType | null = null;
 
-            // Remove previous vote effect
             if (currentVote === "UPVOTE") {
               newScore--;
               newUpvotes--;
@@ -275,7 +251,6 @@ export function useVoteComment(postId: string) {
               newDownvotes--;
             }
 
-            // Apply new vote effect (if not removing)
             if (!isRemovingVote) {
               newUserVote = type;
               if (type === "UPVOTE") {
@@ -300,17 +275,14 @@ export function useVoteComment(postId: string) {
         queryClient.setQueryData(commentKeys.post(postId), optimisticComments);
       }
 
-      // Return a context object with the snapshotted value
       return { previousComments };
     },
     onError: (err, variables, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousComments) {
         queryClient.setQueryData(commentKeys.post(postId), context.previousComments);
       }
     },
     onSettled: () => {
-      // Refetch after a delay to ensure we have the latest vote counts
       setTimeout(() => {
         void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
       }, 1000);
@@ -324,35 +296,28 @@ export function useDeleteComment(postId: string) {
   return useMutation({
     mutationFn: deleteComment,
     onMutate: async (commentId) => {
-      // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: commentKeys.post(postId) });
 
-      // Snapshot the previous value
       const previousComments = queryClient.getQueryData<Comment[]>(commentKeys.post(postId));
 
-      // Optimistically update to the new value
       if (previousComments) {
         const optimisticComments = removeCommentFromTree(previousComments, commentId);
         queryClient.setQueryData(commentKeys.post(postId), optimisticComments);
       }
 
-      // Return a context object with the snapshotted value
       return { previousComments };
     },
     onError: (err, commentId, context) => {
-      // If the mutation fails, use the context returned from onMutate to roll back
       if (context?.previousComments) {
         queryClient.setQueryData(commentKeys.post(postId), context.previousComments);
       }
     },
     onSettled: () => {
-      // Always refetch after error or success
       void queryClient.invalidateQueries({ queryKey: commentKeys.post(postId) });
     },
   });
 }
 
-// Combined hook that provides the same interface as useComments
 export function useCommentsWithQuery(postId: string) {
   const {
     data: comments = [],
@@ -372,7 +337,6 @@ export function useCommentsWithQuery(postId: string) {
   };
 
   const toggleVote = async (commentId: string, type: VoteType) => {
-    // Find current vote status
     const findComment = (commentList: Comment[]): Comment | null => {
       for (const comment of commentList) {
         if (comment.id === commentId) return comment;
@@ -406,7 +370,7 @@ export function useCommentsWithQuery(postId: string) {
     deleteComment,
     toggleVote,
     refetch: () => {
-      // This is handled by React Query automatically
+      // TODO: Implement refetch
     },
   };
 }

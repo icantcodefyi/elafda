@@ -13,7 +13,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Get current date ranges
     const now = new Date();
     const startOfToday = new Date(
       now.getFullYear(),
@@ -26,7 +25,6 @@ export async function GET(req: NextRequest) {
       now.getDate() - 7,
     );
 
-    // Get all stats in parallel
     const [
       totalUsers,
       bannedUsers,
@@ -43,20 +41,16 @@ export async function GET(req: NextRequest) {
       totalReactions,
       recentActivity,
     ] = await Promise.all([
-      // User stats
       db.user.count(),
       db.user.count({ where: { role: "BANNED" } }),
-      // Note: User model doesn't have createdAt, using 0 for now
-      0, // newUsersToday
-      0, // newUsersThisWeek
+      0,
+      0,
 
-      // Post stats
       db.post.count(),
       db.post.count({ where: { isDeleted: true } }),
       db.post.count({ where: { createdAt: { gte: startOfToday } } }),
       db.post.count({ where: { createdAt: { gte: startOfWeek } } }),
 
-      // Comment stats
       (db as any).comment.count(),
       (db as any).comment.count({ where: { isDeleted: true } }),
       (db as any).comment.count({
@@ -64,10 +58,8 @@ export async function GET(req: NextRequest) {
       }),
       (db as any).comment.count({ where: { createdAt: { gte: startOfWeek } } }),
 
-      // Reaction stats
       (db as any).reaction.count(),
 
-      // Recent activity (last 10 items)
       Promise.all([
         db.user.findMany({
           select: {
@@ -118,13 +110,12 @@ export async function GET(req: NextRequest) {
 
     const [recentUsers, recentPosts, recentComments] = recentActivity;
 
-    // Combine and sort recent activity
     const combinedActivity = [
       ...recentUsers.map((user) => ({
         type: "user",
         id: user.id,
         title: `New user: ${user.name}`,
-        createdAt: new Date(), // Use current time since User doesn't have createdAt
+        createdAt: new Date(),
         status: user.role === "BANNED" ? "banned" : "active",
       })),
       ...recentPosts.map((post) => ({

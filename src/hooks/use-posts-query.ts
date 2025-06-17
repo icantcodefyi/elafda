@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Types
 interface Post {
   id: string;
   title: string;
@@ -26,7 +25,6 @@ interface PostsResponse {
   };
 }
 
-// Query key factory
 const postKeys = {
   all: ["posts"] as const,
   lists: () => [...postKeys.all, "list"] as const,
@@ -36,7 +34,6 @@ const postKeys = {
   detail: (slug: string) => [...postKeys.details(), slug] as const,
 };
 
-// API functions
 async function fetchPosts(page = 1, limit = 10): Promise<PostsResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -67,12 +64,11 @@ async function incrementPostViews(postId: string): Promise<void> {
   }
 }
 
-// Hooks
 export function usePostsQuery(page = 1, limit = 10) {
   return useQuery({
     queryKey: postKeys.list({ page, limit }),
     queryFn: () => fetchPosts(page, limit),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
   });
 }
 
@@ -80,7 +76,7 @@ export function usePostQuery(slug: string) {
   return useQuery({
     queryKey: postKeys.detail(slug),
     queryFn: () => fetchPost(slug),
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 10 * 60 * 1000,
   });
 }
 
@@ -90,7 +86,6 @@ export function useIncrementPostViews() {
   return useMutation({
     mutationFn: incrementPostViews,
     onSuccess: (_, postId) => {
-      // Optimistically update the post's view count
       queryClient.setQueryData<Post>(postKeys.detail(postId), (old) => {
         if (old) {
           return { ...old, views: old.views + 1 };
@@ -98,7 +93,6 @@ export function useIncrementPostViews() {
         return old;
       });
 
-      // Also update in the posts list if it exists
       queryClient.setQueriesData<PostsResponse>(
         { queryKey: postKeys.lists() },
         (old) => {

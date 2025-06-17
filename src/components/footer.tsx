@@ -18,15 +18,6 @@ export function Footer() {
         className="hover:text-foreground transition-colors"
       >
         icantcodefyi
-      </a>{" "}
-      and{" "}
-      <a
-        href="https://x.com/ramxcodes"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hover:text-foreground transition-colors"
-      >
-        ramx
       </a>
     </div>
   );

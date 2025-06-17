@@ -38,7 +38,7 @@ export async function GET(
     const post = await db.post.findFirst({
       where: {
         slug: slug,
-        isDeleted: false, // Only show non-deleted posts
+        isDeleted: false,
       },
       include: {
         author: {
@@ -46,6 +46,11 @@ export async function GET(
             id: true,
             name: true,
             image: true,
+          },
+        },
+        collaborators: {
+          select: {
+            userId: true,
           },
         },
       },

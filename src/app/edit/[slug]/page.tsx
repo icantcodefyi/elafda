@@ -53,7 +53,7 @@ interface PostData {
     name: string | null;
     image: string | null;
   };
-  collaborators: {
+  collaborators?: {
     userId: string;
   }[];
 }
@@ -179,9 +179,9 @@ export default function EditPostPage({ params }: EditPostPageProps) {
 
     // Check if user can edit the post (owner, collaborator, or admin)
     const isOwner = originalPost.authorId === user?.id;
-    const isCollaborator = originalPost.collaborators.some(
+    const isCollaborator = originalPost.collaborators?.some(
       collab => collab.userId === user?.id
-    );
+    ) ?? false;
     const isAdmin = user?.role === "ADMIN";
 
     if (!isOwner && !isCollaborator && !isAdmin) {
@@ -293,9 +293,9 @@ export default function EditPostPage({ params }: EditPostPageProps) {
 
   // Check if user can edit the post (owner, collaborator, or admin)
   const isOwner = originalPost.authorId === user?.id;
-  const isCollaborator = originalPost.collaborators.some(
+  const isCollaborator = originalPost.collaborators?.some(
     collab => collab.userId === user?.id
-  );
+  ) ?? false;
   const isAdmin = user?.role === "ADMIN";
   
   if (!isOwner && !isCollaborator && !isAdmin) {

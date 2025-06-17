@@ -64,7 +64,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
   }
 
   return {
-    title: `${post.title} | ${siteConfig.name}`,
+    title: post.title,
     description: post.tags.length > 0 ? post.tags.join(", ") : siteConfig.description,
     openGraph: {
       title: post.title,

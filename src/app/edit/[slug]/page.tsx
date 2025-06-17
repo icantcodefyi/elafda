@@ -53,6 +53,9 @@ interface PostData {
     name: string | null;
     image: string | null;
   };
+  collaborators: {
+    userId: string;
+  }[];
 }
 
 export default function EditPostPage({ params }: EditPostPageProps) {
@@ -174,8 +177,14 @@ export default function EditPostPage({ params }: EditPostPageProps) {
       return;
     }
 
-    // Check if user owns the post
-    if (originalPost.authorId !== user?.id && user?.role !== "ADMIN") {
+    // Check if user can edit the post (owner, collaborator, or admin)
+    const isOwner = originalPost.authorId === user?.id;
+    const isCollaborator = originalPost.collaborators.some(
+      collab => collab.userId === user?.id
+    );
+    const isAdmin = user?.role === "ADMIN";
+
+    if (!isOwner && !isCollaborator && !isAdmin) {
       router.push(`/e-lafda/${originalPost.slug}`);
       return;
     }
@@ -282,8 +291,14 @@ export default function EditPostPage({ params }: EditPostPageProps) {
     return null;
   }
 
-  // Check if user owns the post or is admin
-  if (originalPost.authorId !== user?.id && user?.role !== "ADMIN") {
+  // Check if user can edit the post (owner, collaborator, or admin)
+  const isOwner = originalPost.authorId === user?.id;
+  const isCollaborator = originalPost.collaborators.some(
+    collab => collab.userId === user?.id
+  );
+  const isAdmin = user?.role === "ADMIN";
+  
+  if (!isOwner && !isCollaborator && !isAdmin) {
     return (
       <div className="bg-background min-h-screen">
         <div className="container mx-auto px-4 py-6">
@@ -302,7 +317,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                       Access Denied
                     </h2>
                     <p className="text-muted-foreground text-sm leading-relaxed">
-                      You can only edit your own posts.
+                      You can only edit posts you own or collaborate on.
                     </p>
                   </div>
                   <Button

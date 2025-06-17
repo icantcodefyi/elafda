@@ -7,6 +7,7 @@ import { Separator } from "~/components/ui/separator";
 import { PostClientWrapper } from "~/components/posts/post-client-wrapper";
 import { EditPostButton } from "~/components/posts/edit-post-button";
 import { DeletePostButton } from "~/components/posts/delete-post-button";
+import { CollaboratorManager } from "~/components/posts/collaborator-manager";
 import { db } from "~/server/db";
 import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
@@ -35,6 +36,11 @@ async function getPost(slug: string) {
           id: true,
           name: true,
           image: true,
+        },
+      },
+      collaborators: {
+        select: {
+          userId: true,
         },
       },
     },
@@ -170,8 +176,16 @@ export default async function PostPage({ params }: PostPageProps) {
                   </div>
 
                   {/* Actions and View Count */}
-                  <div className="flex items-center gap-3">
-                    <EditPostButton postSlug={post.slug} authorId={post.authorId} />
+                  <div className="flex items-center gap-2">
+                    <EditPostButton 
+                      postSlug={post.slug} 
+                      authorId={post.authorId}
+                      collaboratorIds={post.collaborators.map(c => c.userId)}
+                    />
+                    <CollaboratorManager 
+                      postSlug={post.slug} 
+                      authorId={post.authorId} 
+                    />
                     <DeletePostButton 
                       postSlug={post.slug} 
                       postTitle={post.title} 

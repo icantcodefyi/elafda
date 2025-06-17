@@ -113,6 +113,11 @@ export async function PUT(
         authorId: true,
         title: true,
         slug: true,
+        collaborators: {
+          select: {
+            userId: true,
+          },
+        },
       },
     });
 
@@ -123,10 +128,16 @@ export async function PUT(
       );
     }
 
-    // Check if user owns the post or is admin
-    if (existingPost.authorId !== session.user.id && session.user.role !== "ADMIN") {
+    // Check if user owns the post, is a collaborator, or is admin
+    const isOwner = existingPost.authorId === session.user.id;
+    const isCollaborator = existingPost.collaborators.some(
+      collab => collab.userId === session.user.id
+    );
+    const isAdmin = session.user.role === "ADMIN";
+
+    if (!isOwner && !isCollaborator && !isAdmin) {
       return NextResponse.json(
-        { error: "Forbidden: You can only edit your own posts" },
+        { error: "Forbidden: You can only edit posts you own or collaborate on" },
         { status: 403 }
       );
     }

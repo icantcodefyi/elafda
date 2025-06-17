@@ -34,12 +34,28 @@ model Post {
     author    User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
     reactions Reaction[]
     comments  Comment[]
+    collaborators PostCollaborator[]
 
     @@index([title])
     @@index([slug])
     @@index([authorId])
     @@index([createdAt])
     @@index([isDeleted])
+}
+
+model PostCollaborator {
+    id        String   @id @default(cuid())
+    postId    String
+    userId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([postId, userId]) 
+    @@index([postId])
+    @@index([userId])
 }
 
 model Reaction {
@@ -153,6 +169,10 @@ model User {
     reactions     Reaction[]
     comments      Comment[]
     commentVotes  CommentVote[]
+    collaborations PostCollaborator[]
+
+    @@index([email])
+    @@index([name])
 }
 
 enum UserRole {

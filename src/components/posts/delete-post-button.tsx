@@ -88,7 +88,7 @@ export function DeletePostButton({ postSlug, postTitle, authorId }: DeletePostBu
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm">
+          <Button variant="outline" size="sm" className="h-8 w-8 p-0">
             <FontAwesomeIcon icon={faEllipsisVertical} className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>

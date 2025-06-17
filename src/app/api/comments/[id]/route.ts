@@ -41,9 +41,13 @@ export async function DELETE(req: NextRequest, { params }: RouteContext) {
       );
     }
 
-    // Delete the comment (cascade will handle replies and votes)
-    await (db as any).comment.delete({
+    await (db as any).comment.update({
       where: { id },
+      data: {
+        isDeleted: true,
+        deletedAt: new Date(),
+        deletedBy: session.user.id,
+      },
     });
 
     return NextResponse.json({ success: true });

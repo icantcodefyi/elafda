@@ -12,6 +12,8 @@ export interface Comment {
   postId: string;
   parentId: string | null;
   createdAt: string;
+  isDeleted?: boolean;
+  deletedAt?: string | null;
   user: CommentUser;
   upvotes: number;
   downvotes: number;

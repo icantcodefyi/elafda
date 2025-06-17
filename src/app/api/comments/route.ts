@@ -27,11 +27,9 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // Get all comments for the post with user info and vote counts
     const comments = await (db as any).comment.findMany({
       where: {
         postId,
-        isDeleted: false, // Only show non-deleted comments
       },
       include: {
         user: {
@@ -85,15 +83,17 @@ export async function GET(req: NextRequest) {
 
       return {
         id: comment.id,
-        content: comment.content,
+        content: comment.isDeleted ? "[deleted]" : comment.content,
         postId: comment.postId,
         parentId: comment.parentId,
         createdAt: comment.createdAt,
+        isDeleted: comment.isDeleted,
+        deletedAt: comment.deletedAt,
         user: comment.user,
-        upvotes,
-        downvotes,
-        score: upvotes - downvotes,
-        userVote: userVote?.type || null,
+        upvotes: comment.isDeleted ? 0 : upvotes,
+        downvotes: comment.isDeleted ? 0 : downvotes,
+        score: comment.isDeleted ? 0 : upvotes - downvotes,
+        userVote: comment.isDeleted ? null : (userVote?.type || null),
         replyCount: comment._count.replies,
       };
     });

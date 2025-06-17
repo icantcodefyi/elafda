@@ -90,7 +90,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-6 mb-4">
             {comments.map((comment, index) => (
               <div key={comment.id}>
                 <CommentItem

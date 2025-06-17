@@ -40,7 +40,6 @@ import {
   Undo,
   Redo,
   Image as ImageIcon,
-  MessageSquare,
   Lightbulb,
   Upload,
   Twitter,
@@ -435,7 +434,7 @@ export function RichTextEditor({
                         setTweetError(null);
                       }}
                     >
-                      <MessageSquare className="h-4 w-4" />
+                      <Twitter className="h-4 w-4" />
                     </Button>
                   </DialogTrigger>
                 </TooltipTrigger>

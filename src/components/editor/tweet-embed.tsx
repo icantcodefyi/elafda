@@ -131,32 +131,8 @@ const TweetEmbedComponent = ({
           </Button>
         )}
 
-        <div className="relative p-4">
-          {/* Header */}
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="bg-background flex h-6 w-6 items-center justify-center rounded-md border">
-                <MessageSquare className="text-muted-foreground h-3.5 w-3.5" />
-              </div>
-              <span className="text-muted-foreground text-sm font-medium tracking-wide uppercase">
-                Tweet Embed
-              </span>
-              {hasValidTweet && (
-                <>
-                  <div className="bg-muted-foreground/50 h-1 w-1 rounded-full" />
-                  <a
-                    href={node.attrs.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-                </>
-              )}
-            </div>
-
-            {/* Edit button - only show in editable mode */}
+        <div className="relative p-2">
+          <div className="flex items-center justify-between">
             {isEditable && (
               <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                 <DialogTrigger asChild>
@@ -192,7 +168,8 @@ const TweetEmbedComponent = ({
                         placeholder="https://twitter.com/username/status/123456789"
                         className={cn(
                           "w-full",
-                          error && "border-destructive focus:border-destructive",
+                          error &&
+                            "border-destructive focus:border-destructive",
                         )}
                       />
                       {error && (
@@ -236,10 +213,9 @@ const TweetEmbedComponent = ({
                   No Tweet URL Set
                 </h3>
                 <p className="text-muted-foreground mb-4 max-w-sm text-xs">
-                  {isEditable 
+                  {isEditable
                     ? 'Click "Add URL" to embed a tweet from Twitter/X'
-                    : 'This tweet embed is not configured properly'
-                  }
+                    : "This tweet embed is not configured properly"}
                 </p>
                 {isEditable && (
                   <Button

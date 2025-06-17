@@ -12,7 +12,6 @@ import { formatDistanceToNow } from "date-fns";
 import type { TiptapContent } from "~/types/editor";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faEye,
   faClock,
   faUser,
   faTag,
@@ -178,15 +177,6 @@ export default async function PostPage({ params }: PostPageProps) {
                       postTitle={post.title} 
                       authorId={post.authorId} 
                     />
-                    <div className="bg-muted/50 flex items-center gap-1.5 rounded-full px-3 py-1.5">
-                      <FontAwesomeIcon
-                        icon={faEye}
-                        className="text-muted-foreground h-3.5 w-3.5"
-                      />
-                      <span className="text-muted-foreground text-sm font-medium">
-                        {post.views.toLocaleString()}
-                      </span>
-                    </div>
                   </div>
                 </div>
               </CardHeader>

@@ -56,7 +56,7 @@ const Skeleton = ({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={cn("bg-primary/10 rounded-md", className)} {...props} />
+    <div className={cn("bg-foreground/10 rounded-md", className)} {...props} />
   );
 };
 
@@ -69,7 +69,7 @@ export const TweetSkeleton = ({
 }) => (
   <div
     className={cn(
-      "flex size-full max-h-max min-w-72 flex-col gap-2 rounded-lg border p-4",
+      "flex size-full max-h-max min-w-72 flex-col gap-2 rounded-lg p-4",
       className,
     )}
     {...props}

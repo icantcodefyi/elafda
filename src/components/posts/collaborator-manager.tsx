@@ -40,8 +40,9 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchDialog, setShowSearchDialog] = useState(false);
   const [showCollaboratorsDialog, setShowCollaboratorsDialog] = useState(false);
+  const [addingCollaboratorId, setAddingCollaboratorId] = useState<string | null>(null);
+  const [removingCollaboratorId, setRemovingCollaboratorId] = useState<string | null>(null);
 
-  // Fetch collaborators
   const fetchCollaborators = async () => {
     try {
       setIsLoading(true);
@@ -57,7 +58,6 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
     }
   };
 
-  // Search users
   const searchUsersHandler = async (query: string) => {
     if (!query.trim()) {
       setSearchUsers([]);
@@ -82,9 +82,9 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
     }
   };
 
-  // Add collaborator
   const addCollaborator = async (userId: string) => {
     try {
+      setAddingCollaboratorId(userId);
       const response = await fetch(`/api/posts/${postSlug}/collaborators`, {
         method: "POST",
         headers: {
@@ -105,12 +105,14 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
       }
     } catch (error) {
       console.error("Error adding collaborator:", error);
+    } finally {
+      setAddingCollaboratorId(null);
     }
   };
 
-  // Remove collaborator
   const removeCollaborator = async (userId: string) => {
     try {
+      setRemovingCollaboratorId(userId);
       const response = await fetch(`/api/posts/${postSlug}/collaborators`, {
         method: "DELETE",
         headers: {
@@ -124,6 +126,8 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
       }
     } catch (error) {
       console.error("Error removing collaborator:", error);
+    } finally {
+      setRemovingCollaboratorId(null);
     }
   };
 
@@ -139,20 +143,17 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
     return () => clearTimeout(debounceTimer);
   }, [searchQuery]);
 
-  // Only show to post author
   if (!isSignedIn || user?.id !== authorId) {
     return null;
   }
 
   return (
     <div className="flex items-center gap-2">
-      {/* Add Collaborator Button */}
       <Dialog 
         open={showSearchDialog} 
         onOpenChange={(open) => {
           setShowSearchDialog(open);
           if (!open) {
-            // Clear search when dialog closes
             setSearchQuery("");
             setSearchUsers([]);
           }
@@ -197,7 +198,6 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                       !collaborators.some(collab => collab.userId === searchUser.id)
                     );
                     
-                    // Show empty state only if we have a search query but no results
                     if (searchQuery.trim() && filteredUsers.length === 0) {
                       return (
                         <div className="text-center py-6 text-muted-foreground text-sm">
@@ -206,7 +206,6 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                       );
                     }
                     
-                    // Show placeholder when no search query
                     if (!searchQuery.trim()) {
                       return (
                         <div className="text-center py-6 text-muted-foreground text-sm">
@@ -215,12 +214,12 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                       );
                     }
                     
-                    // Show results
                     return filteredUsers.map((searchUser) => (
                       <button
                         key={searchUser.id}
                         onClick={() => void addCollaborator(searchUser.id)}
-                        className="w-full flex items-center gap-3 p-3 hover:bg-accent hover:text-accent-foreground text-left border-b last:border-b-0"
+                        disabled={addingCollaboratorId === searchUser.id}
+                        className="w-full flex items-center gap-3 p-3 hover:bg-accent hover:text-accent-foreground text-left border-b last:border-b-0 disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={searchUser.image ?? undefined} />
@@ -228,7 +227,7 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                             <FontAwesomeIcon icon={faUser} className="h-4 w-4" />
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col flex-1">
                           <span className="font-medium">
                             {searchUser.name ?? "Unnamed User"}
                           </span>
@@ -236,6 +235,12 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                             {searchUser.email}
                           </span>
                         </div>
+                        {addingCollaboratorId === searchUser.id && (
+                          <FontAwesomeIcon
+                            icon={faSpinner}
+                            className="h-4 w-4 animate-spin text-muted-foreground"
+                          />
+                        )}
                       </button>
                     ));
                   })()}
@@ -246,20 +251,14 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
         </DialogContent>
       </Dialog>
 
-      {/* View Collaborators Button */}
       {collaborators.length > 0 && (
         <Dialog open={showCollaboratorsDialog} onOpenChange={setShowCollaboratorsDialog}>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 px-2 sm:px-3">
-              <FontAwesomeIcon icon={faUsers} className="h-3 w-3 sm:mr-2" />
-              <span className="hidden sm:inline">
-                <Badge variant="secondary" className="ml-1">
-                  {collaborators.length}
-                </Badge>
-              </span>
-              <Badge variant="secondary" className="ml-1 sm:hidden">
+            <Button variant="outline" size="sm" className="h-8 px-2 sm:px-3">
+              <FontAwesomeIcon icon={faUsers} className="h-3 w-3" />
+              <span className="hidden sm:inline text-xs text-muted-foreground">
                 {collaborators.length}
-              </Badge>
+              </span>
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
@@ -303,9 +302,14 @@ export function CollaboratorManager({ postSlug, authorId }: CollaboratorManagerP
                       variant="ghost"
                       size="sm"
                       onClick={() => void removeCollaborator(collaborator.userId)}
-                      className="text-destructive hover:text-destructive"
+                      disabled={removingCollaboratorId === collaborator.userId}
+                      className="text-destructive hover:text-destructive disabled:opacity-50"
                     >
-                      <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
+                      {removingCollaboratorId === collaborator.userId ? (
+                        <FontAwesomeIcon icon={faSpinner} className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <FontAwesomeIcon icon={faTrash} className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 ))

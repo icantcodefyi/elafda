@@ -37,7 +37,7 @@ const postKeys = {
 };
 
 // API functions
-async function fetchPosts(page = 1, limit = 20): Promise<PostsResponse> {
+async function fetchPosts(page = 1, limit = 10): Promise<PostsResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
@@ -68,7 +68,7 @@ async function incrementPostViews(postId: string): Promise<void> {
 }
 
 // Hooks
-export function usePostsQuery(page = 1, limit = 20) {
+export function usePostsQuery(page = 1, limit = 10) {
   return useQuery({
     queryKey: postKeys.list({ page, limit }),
     queryFn: () => fetchPosts(page, limit),

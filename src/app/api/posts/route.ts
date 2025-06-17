@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
 
     const posts = await db.post.findMany({
       where: {
-        isDeleted: false, // Only show non-deleted posts
+        isDeleted: false,
       },
       include: {
         author: {

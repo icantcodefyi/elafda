@@ -109,7 +109,6 @@ export default async function PostPage({ params }: PostPageProps) {
       <div className="bg-background min-h-screen">
         <div className="container mx-auto px-4 py-6">
           <div className="mx-auto max-w-2xl space-y-6">
-            {/* Back to Home Button */}
             <Link
               href="/"
               className="text-muted-foreground hover:text-foreground inline-flex items-center transition-colors duration-200 hover:underline"
@@ -117,16 +116,13 @@ export default async function PostPage({ params }: PostPageProps) {
               Back to Home
             </Link>
 
-            {/* Main Post Card */}
             <Card className="border-0 shadow-lg">
               <CardHeader className="space-y-6 pb-4">
-                {/* Post Title */}
                 <div className="space-y-3">
                   <h1 className="text-foreground text-2xl leading-tight font-bold tracking-tight">
                     {post.title}
                   </h1>
 
-                  {/* Tags */}
                   {post.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {post.tags.map((tag) => (
@@ -148,7 +144,6 @@ export default async function PostPage({ params }: PostPageProps) {
 
                 <Separator className="bg-border/50" />
 
-                {/* Author and Meta Information */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar className="ring-border/20 h-10 w-10 ring-2">
@@ -175,7 +170,6 @@ export default async function PostPage({ params }: PostPageProps) {
                     </div>
                   </div>
 
-                  {/* Actions and View Count */}
                   <div className="flex items-center gap-2">
                     <EditPostButton 
                       postSlug={post.slug} 
@@ -203,13 +197,12 @@ export default async function PostPage({ params }: PostPageProps) {
               </CardContent>
             </Card>
 
-            {/* Comments Section Card is now handled in PostClientWrapper */}
           </div>
         </div>
       </div>
     );
   } catch (error) {
     console.error("Error in PostPage:", error);
-    throw error; // Re-throw to trigger error boundary
+    throw error;
   }
 } 

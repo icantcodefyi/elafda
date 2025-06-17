@@ -24,40 +24,6 @@ export function BrandAmbassadors() {
           <p>@shydev69</p>
         </TooltipContent>
       </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a
-            href="https://x.com/LiquidZooo"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Avatar className="-ml-1 cursor-pointer transition-transform hover:scale-105 hover:rotate-12">
-              <AvatarImage src="https://pbs.twimg.com/profile_images/1930534013598302208/oQvza8Wy_400x400.jpg" />
-              <AvatarFallback>LZ</AvatarFallback>
-            </Avatar>
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>@LiquidZooo</p>
-        </TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <a
-            href="https://x.com/damnGruz"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Avatar className="-ml-1 cursor-pointer transition-transform hover:scale-105 hover:rotate-12">
-              <AvatarImage src="https://pbs.twimg.com/profile_images/1928638528595886081/MzhFLiaF_400x400.jpg" />
-              <AvatarFallback>DG</AvatarFallback>
-            </Avatar>
-          </a>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p>@damnGruz</p>
-        </TooltipContent>
-      </Tooltip>
     </div>
   );
 }

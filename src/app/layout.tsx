@@ -1,7 +1,6 @@
 import "~/styles/globals.css";
 
 import { type Metadata } from "next";
-import { Geist } from "next/font/google";
 import { siteConfig } from "~/site-config";
 import { ThemeProvider } from "~/components/theme-provider";
 import { SessionProviderWrapper } from "~/components/providers/session-provider";
@@ -20,16 +19,11 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/logo.svg" }],
 };
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
+    <html lang="en" className="font-chirp" suppressHydrationWarning>
       <body>
         <SessionProviderWrapper>
           <QueryProvider>

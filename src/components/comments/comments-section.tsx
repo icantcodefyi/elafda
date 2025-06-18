@@ -1,8 +1,10 @@
 "use client";
 
-import { MessageSquare, Loader2 } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { Separator } from "~/components/ui/separator";
+import { Skeleton } from "~/components/ui/skeleton";
+import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { useCommentsWithQuery } from "~/hooks/use-comments-query";
 import { useAuth } from "~/hooks/use-auth";
 import { CommentForm } from "./comment-form";
@@ -11,6 +13,55 @@ import { type CreateCommentData } from "~/types/comments";
 
 interface CommentsSectionProps {
   postId: string;
+}
+
+function CommentSkeleton({ depth = 0 }: { depth?: number }) {
+  return (
+    <div className={`relative ${depth > 0 ? 'ml-8' : ''}`}>
+      <div className="flex gap-3">
+        <div className="flex-shrink-0 mt-1">
+          <Avatar className="h-8 w-8">
+            <AvatarFallback>
+              <Skeleton className="h-full w-full rounded-full" />
+            </AvatarFallback>
+          </Avatar>
+        </div>
+        
+        <div className="flex-1 space-y-2">
+          <div className="flex items-center gap-2">
+            <Skeleton className="h-4 w-20 rounded-md" />
+            <Skeleton className="h-3 w-16 rounded-md" />
+          </div>
+          
+          <div className="space-y-1">
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-3/4 rounded-md" />
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <Skeleton className="h-6 w-6 rounded-md" />
+              <Skeleton className="h-4 w-6 rounded-md" />
+              <Skeleton className="h-6 w-6 rounded-md" />
+            </div>
+            <Skeleton className="h-4 w-12 rounded-md" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CommentsSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div className="space-y-6 mb-4">
+      {Array.from({ length: count }).map((_, index) => (
+        <div key={index}>
+          <CommentSkeleton />
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export function CommentsSection({ postId }: CommentsSectionProps) {
@@ -47,13 +98,11 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
     <Card className="pb-0">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
           Discussion ({totalComments})
         </CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-6">
-        {/* New comment form */}
         {user ? (
           <CommentForm
             postId={postId}
@@ -68,14 +117,8 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
           </Card>
         )}
 
-        {/* Comments list */}
         {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="text-muted-foreground ml-2">
-              Loading comments...
-            </span>
-          </div>
+          <CommentsSkeleton count={1} />
         ) : error ? (
           <div className="py-8 text-center">
             <p className="text-destructive">Failed to load comments</p>

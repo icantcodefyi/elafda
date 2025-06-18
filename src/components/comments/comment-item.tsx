@@ -118,11 +118,10 @@ export function CommentItem({
         parentCollapsed && "hidden"
       )}
     >
-      {/* Individual comment with isolated hover group */}
       <div className="group">
         <div className="flex gap-3">
           <div className="flex-shrink-0 flex items-start pt-1">
-            {hasReplies ? (
+            {hasReplies && comment.replies!.length > 1 ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -141,7 +140,7 @@ export function CommentItem({
                 </motion.div>
               </Button>
             ) : (
-              <div className="h-6 w-6" /> 
+              null
             )}
           </div>
 
@@ -156,21 +155,19 @@ export function CommentItem({
 
           <div className="flex-1 space-y-1">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium">{comment.user.name}</span>
-                <span className="text-muted-foreground text-xs">
-                  {formatDistanceToNow(new Date(comment.createdAt), {
-                    addSuffix: true,
-                  })}
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <span className="text-sm font-medium truncate">{comment.user.name}</span>
+                <span className="text-muted-foreground text-xs whitespace-nowrap">
+                  {formatDistanceToNow(new Date(comment.createdAt))}
                 </span>
                 <AnimatePresence>
-                  {hasReplies && isCollapsed && (
+                  {hasReplies && isCollapsed && comment.replies!.length > 1 && (
                     <motion.span
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.15, ease: "easeOut" }}
-                      className="text-muted-foreground text-xs"
+                      className="text-muted-foreground text-xs whitespace-nowrap"
                     >
                       ({totalReplies} {totalReplies === 1 ? 'reply' : 'replies'})
                     </motion.span>
@@ -307,7 +304,6 @@ export function CommentItem({
         </div>
       </div>
 
-      {/* Replies container - separate from hover group */}
       <AnimatePresence>
         {hasReplies && !isCollapsed && (
           <motion.div

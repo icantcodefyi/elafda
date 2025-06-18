@@ -2,7 +2,6 @@
 
 import { MessageSquare } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { Separator } from "~/components/ui/separator";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { useCommentsWithQuery } from "~/hooks/use-comments-query";
@@ -17,27 +16,27 @@ interface CommentsSectionProps {
 
 function CommentSkeleton({ depth = 0 }: { depth?: number }) {
   return (
-    <div className={`relative ${depth > 0 ? 'ml-8' : ''}`}>
+    <div className={`relative ${depth > 0 ? "ml-8" : ""}`}>
       <div className="flex gap-3">
-        <div className="flex-shrink-0 mt-1">
+        <div className="mt-1 flex-shrink-0">
           <Avatar className="h-8 w-8">
             <AvatarFallback>
               <Skeleton className="h-full w-full rounded-full" />
             </AvatarFallback>
           </Avatar>
         </div>
-        
+
         <div className="flex-1 space-y-2">
           <div className="flex items-center gap-2">
             <Skeleton className="h-4 w-20 rounded-md" />
             <Skeleton className="h-3 w-16 rounded-md" />
           </div>
-          
+
           <div className="space-y-1">
             <Skeleton className="h-4 w-full rounded-md" />
             <Skeleton className="h-4 w-3/4 rounded-md" />
           </div>
-          
+
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               <Skeleton className="h-6 w-6 rounded-md" />
@@ -54,7 +53,7 @@ function CommentSkeleton({ depth = 0 }: { depth?: number }) {
 
 function CommentsSkeleton({ count = 3 }: { count?: number }) {
   return (
-    <div className="space-y-6 mb-4">
+    <div className="mb-4 space-y-6">
       {Array.from({ length: count }).map((_, index) => (
         <div key={index}>
           <CommentSkeleton />
@@ -133,18 +132,19 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
             </p>
           </div>
         ) : (
-          <div className="space-y-6 mb-4">
-            {comments.map((comment, index) => (
-              <div key={comment.id}>
-                <CommentItem
-                  comment={comment}
-                  onVote={toggleVote}
-                  onDelete={deleteComment}
-                  onReply={handleReply}
-                />
-                {index < comments.length - 1 && <Separator className="mt-6" />}
-              </div>
-            ))}
+          <div className="mb-4">
+            <div className="space-y-3">
+              {comments.map((comment) => (
+                <div key={comment.id}>
+                  <CommentItem
+                    comment={comment}
+                    onVote={toggleVote}
+                    onDelete={deleteComment}
+                    onReply={handleReply}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </CardContent>

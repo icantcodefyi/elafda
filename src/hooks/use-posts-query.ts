@@ -8,6 +8,7 @@ interface Post {
   tags: string[];
   views: number;
   createdAt: string;
+  heartReactions?: number;
   author: {
     id: string;
     name: string | null;
@@ -34,10 +35,11 @@ const postKeys = {
   detail: (slug: string) => [...postKeys.details(), slug] as const,
 };
 
-async function fetchPosts(page = 1, limit = 10): Promise<PostsResponse> {
+async function fetchPosts(page = 1, limit = 10, ranked = false): Promise<PostsResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
+    ...(ranked && { ranked: "true" }),
   });
 
   const response = await fetch(`/api/posts?${params.toString()}`);
@@ -64,10 +66,10 @@ async function incrementPostViews(postId: string): Promise<void> {
   }
 }
 
-export function usePostsQuery(page = 1, limit = 10) {
+export function usePostsQuery(page = 1, limit = 10, ranked = false) {
   return useQuery({
-    queryKey: postKeys.list({ page, limit }),
-    queryFn: () => fetchPosts(page, limit),
+    queryKey: postKeys.list({ page, limit, ranked }),
+    queryFn: () => fetchPosts(page, limit, ranked),
     staleTime: 5 * 60 * 1000,
   });
 }

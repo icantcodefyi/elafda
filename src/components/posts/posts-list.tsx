@@ -15,15 +15,17 @@ import { useState } from "react";
 
 interface PostsListProps {
   initialPage?: number;
+  ranked?: boolean;
 }
 
-export function PostsList({ initialPage = 1 }: PostsListProps) {
+export function PostsList({ initialPage = 1, ranked = true }: PostsListProps) {
   const [currentPage, setCurrentPage] = useState(initialPage);
   const postsPerPage = 10;
 
   const { data, isLoading, error, refetch } = usePostsQuery(
     currentPage,
     postsPerPage,
+    ranked,
   );
 
   if (isLoading) {
@@ -168,14 +170,16 @@ export function PostsList({ initialPage = 1 }: PostsListProps) {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="line-clamp-2">
-                    <Link
-                      href={`/e-lafda/${post.slug}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {post.title}
-                    </Link>
-                  </CardTitle>
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="line-clamp-2">
+                      <Link
+                        href={`/e-lafda/${post.slug}`}
+                        className="hover:text-primary transition-colors"
+                      >
+                        {post.title}
+                      </Link>
+                    </CardTitle>
+                  </div>
 
                   {/* Tags */}
                   {post.tags.length > 0 && (

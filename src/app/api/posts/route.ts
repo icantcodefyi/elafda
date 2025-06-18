@@ -90,43 +90,92 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") ?? "1");
     const limit = parseInt(url.searchParams.get("limit") ?? "10");
+    const ranked = url.searchParams.get("ranked") === "true";
     const skip = (page - 1) * limit;
 
-    const posts = await db.post.findMany({
-      where: {
-        isDeleted: false,
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
+    if (ranked) {
+      const posts = await db.post.findMany({
+        where: {
+          isDeleted: false,
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          reactions: {
+            where: {
+              type: "HEART",
+            },
+            select: {
+              id: true,
+            },
           },
         },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip,
-      take: limit,
-    });
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
 
-    const total = await db.post.count({
-      where: {
-        isDeleted: false,
-      },
-    });
+      const postsWithHeartCounts = posts.map((post) => ({
+        ...post,
+        heartReactions: post.reactions.length,
+        reactions: undefined,
+      })).sort((a, b) => b.heartReactions - a.heartReactions);
 
-    return NextResponse.json({
-      posts,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    });
+      const paginatedPosts = postsWithHeartCounts.slice(skip, skip + limit);
+
+      const total = posts.length;
+
+      return NextResponse.json({
+        posts: paginatedPosts,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
+        },
+      });
+    } else {
+      const posts = await db.post.findMany({
+        where: {
+          isDeleted: false,
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+        skip,
+        take: limit,
+      });
+
+      const total = await db.post.count({
+        where: {
+          isDeleted: false,
+        },
+      });
+
+      return NextResponse.json({
+        posts,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit),
+        },
+      });
+    }
   } catch (error) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(

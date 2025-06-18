@@ -490,6 +490,7 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                   <Separator />
 
                   {/* Content Section */}
+                  {/* Content Section */}
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <Tooltip>
@@ -560,21 +561,18 @@ export default function EditPostPage({ params }: EditPostPageProps) {
                         </TooltipContent>
                       </Tooltip>
                     </div>
-                    <div className="border-input focus-within:border-ring focus-within:ring-ring/50 rounded-md border shadow-xs transition-[color,box-shadow] focus-within:ring-[3px]">
-                      <RichTextEditor
-                        content={postData.description}
-                        onChange={handleEditorChange}
-                        onImageUpload={handleImageUpload}
-                        placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images. Paste Twitter/X URLs to auto-convert them to embeds!"
-                      />
-                    </div>
+                    <RichTextEditor
+                      content={postData.description}
+                      onChange={handleEditorChange}
+                      onImageUpload={handleImageUpload}
+                      placeholder="Tell your story... Use the toolbar to add formatting, lore blocks, tweet embeds, and images. Paste Twitter/X URLs to auto-convert them to embeds!"
+                    />
                     <p className="text-muted-foreground text-xs">
                       Use the rich text editor to format your content, add
                       images, and embed tweets. Paste Twitter/X URLs to
                       automatically convert them to embeds.
                     </p>
                   </div>
-
                   <Separator />
 
                   {/* Action Buttons */}

@@ -11,7 +11,8 @@ import { AlertTriangle, ChevronLeft, ChevronRight } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { usePostsQuery } from "~/hooks/use-posts-query";
 import { Button } from "~/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getRankedPosts, type PostWithReactions } from "~/lib/ranking";
 
 interface PostsListProps {
   initialPage?: number;
@@ -19,6 +20,8 @@ interface PostsListProps {
 
 export function PostsList({ initialPage = 1 }: PostsListProps) {
   const [currentPage, setCurrentPage] = useState(initialPage);
+  const [rankedPosts, setRankedPosts] = useState<PostWithReactions[]>([]);
+  const [isRanking, setIsRanking] = useState(false);
   const postsPerPage = 10;
 
   const { data, isLoading, error, refetch } = usePostsQuery(
@@ -26,7 +29,26 @@ export function PostsList({ initialPage = 1 }: PostsListProps) {
     postsPerPage,
   );
 
-  if (isLoading) {
+  // Apply ranking when posts data changes
+  useEffect(() => {
+    if (data?.posts) {
+      setIsRanking(true);
+      getRankedPosts(data.posts)
+        .then((ranked) => {
+          setRankedPosts(ranked);
+        })
+        .catch((error) => {
+          console.error("Error ranking posts:", error);
+          // Fallback to original posts if ranking fails
+          setRankedPosts(data.posts.map(post => ({ ...post, heartReactions: 0 })));
+        })
+        .finally(() => {
+          setIsRanking(false);
+        });
+    }
+  }, [data?.posts]);
+
+  if (isLoading || isRanking) {
     return <PostsListSkeleton count={postsPerPage} />;
   }
 
@@ -45,7 +67,7 @@ export function PostsList({ initialPage = 1 }: PostsListProps) {
     );
   }
 
-  const posts = data?.posts ?? [];
+  const posts = rankedPosts.length > 0 ? rankedPosts : (data?.posts ?? []);
   const pagination = data?.pagination;
 
   if (posts.length === 0) {
@@ -163,19 +185,30 @@ export function PostsList({ initialPage = 1 }: PostsListProps) {
     <div className="space-y-6">
       {/* Posts List */}
       <div className="space-y-6">
-        {posts.map((post) => (
+        {posts.map((post, index) => (
           <Card key={post.id} className="transition-shadow hover:shadow-md">
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <CardTitle className="line-clamp-2">
-                    <Link
-                      href={`/e-lafda/${post.slug}`}
-                      className="hover:text-primary transition-colors"
-                    >
-                      {post.title}
-                    </Link>
-                  </CardTitle>
+                  <div className="flex items-center gap-3">
+                    {/* Ranking badge for top 3 posts */}
+                    {index < 3 && (
+                      <Badge 
+                        variant="outline"
+                        className="text-xs font-bold bg-white text-black border-gray-300"
+                      >
+                        top #{index + 1}
+                      </Badge>
+                    )}
+                    <CardTitle className="line-clamp-2">
+                      <Link
+                        href={`/e-lafda/${post.slug}`}
+                        className="hover:text-primary transition-colors"
+                      >
+                        {post.title}
+                      </Link>
+                    </CardTitle>
+                  </div>
 
                   {/* Tags */}
                   {post.tags.length > 0 && (

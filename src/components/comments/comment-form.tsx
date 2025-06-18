@@ -60,7 +60,7 @@ export function CommentForm({
 
         <div className="flex items-center justify-between">
           <div className="text-muted-foreground text-xs">
-            Supports Markdown formatting
+            Supports Markdown
           </div>
 
           <div className="flex gap-2">

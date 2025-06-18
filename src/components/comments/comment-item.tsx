@@ -121,7 +121,7 @@ export function CommentItem({
       <div className="group">
         <div className="flex gap-3">
           <div className="flex-shrink-0 flex items-start pt-1">
-            {hasReplies && comment.replies!.length > 1 ? (
+            {hasReplies ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -161,7 +161,7 @@ export function CommentItem({
                   {formatDistanceToNow(new Date(comment.createdAt))}
                 </span>
                 <AnimatePresence>
-                  {hasReplies && isCollapsed && comment.replies!.length > 1 && (
+                  {hasReplies && isCollapsed && (
                     <motion.span
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}

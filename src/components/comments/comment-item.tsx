@@ -315,7 +315,7 @@ export function CommentItem({
               ease: "easeInOut",
               opacity: { duration: 0.2 }
             }}
-            className="mt-4 space-y-4 overflow-hidden"
+            className="mt-2 space-y-2 overflow-hidden"
           >
             {comment.replies!.map((reply, index) => (
               <motion.div

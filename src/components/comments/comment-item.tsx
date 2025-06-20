@@ -1,9 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSanitize from "rehype-sanitize";
 import { formatDistanceToNow } from "date-fns";
 import { motion, AnimatePresence } from "motion/react";
 import { Button } from "~/components/ui/button";
@@ -27,6 +24,7 @@ import { cn } from "~/lib/utils";
 import { type Comment, type VoteType } from "~/types/comments";
 import { useAuth } from "~/hooks/use-auth";
 import { CommentForm } from "./comment-form";
+import { MentionRenderer } from "./mention-renderer";
 
 interface CommentItemProps {
   comment: Comment;
@@ -210,18 +208,13 @@ export function CommentItem({
               )}
             </div>
 
-            <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-              {comment.isDeleted ? (
+            {comment.isDeleted ? (
+              <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
                 <span className="text-muted-foreground italic">[deleted]</span>
-              ) : (
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeSanitize]}
-                >
-                  {comment.content}
-                </ReactMarkdown>
-              )}
-            </div>
+              </div>
+            ) : (
+              <MentionRenderer content={comment.content} />
+            )}
 
             {!comment.isDeleted && (
               <div className="text-muted-foreground flex items-center gap-4 text-xs">

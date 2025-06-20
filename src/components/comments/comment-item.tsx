@@ -106,6 +106,8 @@ export function CommentItem({
     }, 0);
   };
 
+  const isUserMentioned = user?.name && new RegExp(`@${user.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=\\s|$|[^a-zA-Z0-9_])`).test(comment.content);
+
   const totalReplies = getTotalRepliesCount(comment);
 
   return (
@@ -213,7 +215,12 @@ export function CommentItem({
                 <span className="text-muted-foreground italic">[deleted]</span>
               </div>
             ) : (
-              <MentionRenderer content={comment.content} />
+              <div className={cn(
+                "prose prose-sm dark:prose-invert max-w-none text-sm",
+                isUserMentioned && "bg-muted-foreground/10 rounded-lg"
+              )}>
+                <MentionRenderer content={comment.content} />
+              </div>
             )}
 
             {!comment.isDeleted && (

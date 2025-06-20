@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
 import { Card } from "~/components/ui/card";
 import { Loader2 } from "lucide-react";
+import { UserMentionInput } from "./user-mention-input";
 
 interface CommentFormProps {
   postId: string;
@@ -50,17 +50,17 @@ export function CommentForm({
   return (
     <Card className="border-0 shadow-none py-0">
       <form onSubmit={handleSubmit} className="space-y-3">
-        <Textarea
+        <UserMentionInput
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={setContent}
           placeholder={placeholder}
-          className="min-h-[100px] resize-none"
+          minHeight={100}
           disabled={isSubmitting}
         />
 
         <div className="flex items-center justify-between">
           <div className="text-muted-foreground text-xs">
-            Supports Markdown
+            Supports Markdown • Use @ to mention users
           </div>
 
           <div className="flex gap-2">

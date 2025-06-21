@@ -166,66 +166,68 @@ export function PostsList({ initialPage = 1, ranked = true }: PostsListProps) {
       {/* Posts List */}
       <div className="space-y-6">
         {posts.map((post) => (
-          <Card key={post.id} className="transition-shadow hover:shadow-md">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <CardTitle className="line-clamp-2">
-                      <Link
-                        href={`/e-lafda/${post.slug}`}
-                        className="hover:text-primary transition-colors"
-                      >
+          <Card key={post.id} className="transition-shadow hover:shadow-md group">
+            <Link 
+              href={`/e-lafda/${post.slug}`}
+              className="block cursor-pointer"
+            >
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors">
                         {post.title}
-                      </Link>
-                    </CardTitle>
+                      </CardTitle>
+                    </div>
+
+                    {/* Tags */}
+                    {post.tags.length > 0 && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {post.tags.slice(0, 3).map((tag) => (
+                          <Badge
+                            key={tag}
+                            variant="secondary"
+                            className="text-xs"
+                          >
+                            {tag}
+                          </Badge>
+                        ))}
+                        {post.tags.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{post.tags.length - 3} more
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="space-y-4">
+                {/* Author and Meta */}
+                <div className="text-muted-foreground flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={post.author.image ?? undefined} />
+                      <AvatarFallback className="text-xs">
+                        {post.author.name?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span>{post.author.name}</span>
+                    <span>•</span>
+                    <span>
+                      {formatDistanceToNow(new Date(post.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </span>
                   </div>
 
-                  {/* Tags */}
-                  {post.tags.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {post.tags.slice(0, 3).map((tag) => (
-                        <Badge
-                          key={tag}
-                          variant="secondary"
-                          className="text-xs"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                      {post.tags.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{post.tags.length - 3} more
-                        </Badge>
-                      )}
-                    </div>
-                  )}
+                  <div onClick={(e) => e.preventDefault()} className="relative z-10">
+                    <ReactionButtons postId={post.id} />
+                  </div>
                 </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              {/* Author and Meta */}
-              <div className="text-muted-foreground flex items-center justify-between text-sm">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src={post.author.image ?? undefined} />
-                    <AvatarFallback className="text-xs">
-                      {post.author.name?.charAt(0)?.toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>{post.author.name}</span>
-                  <span>•</span>
-                  <span>
-                    {formatDistanceToNow(new Date(post.createdAt), {
-                      addSuffix: true,
-                    })}
-                  </span>
-                </div>
-
-                <ReactionButtons postId={post.id} />
-              </div>
-            </CardContent>
+              </CardContent>
+            </Link>
           </Card>
         ))}
       </div>

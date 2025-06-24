@@ -15,7 +15,7 @@ export function BrandAmbassadors() {
             rel="noopener noreferrer"
           >
             <Avatar className="cursor-pointer transition-transform hover:scale-105 hover:rotate-12">
-              <AvatarImage src="https://pbs.twimg.com/profile_images/1935084419150196736/jyh68Cdl_400x400.jpg" />
+              <AvatarImage src="https://pbs.twimg.com/profile_images/1937347280090116097/MazYQ7vz_400x400.jpg" />
             </Avatar>
           </a>
         </TooltipTrigger>
